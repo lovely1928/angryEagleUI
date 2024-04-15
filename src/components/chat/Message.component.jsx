@@ -8,7 +8,7 @@ const Message = ({ message }) => {
   console.log({ from: message.from, userId: user.id })
 
   const position = message.from === user.id ? 'justify-end' : 'justify-start'
-  const bgColor = message.type === 'sent' ? 'bg-blue-500' : 'bg-gray-300';
+  const bgColor = message.from === user.id ? 'bg-gradient-to-r from-sky-200 to-slate-50' : 'bg-gradient-to-r from-stone-200 to-slate-50';
   const textColor = message.type === 'sent' ? 'text-white' : 'text-black';
   return (
     <div className={`flex ${position}`}>

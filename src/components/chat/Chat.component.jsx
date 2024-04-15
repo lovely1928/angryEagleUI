@@ -59,7 +59,7 @@ const Chat = () => {
 
 
   return (
-    <div className='w-500px border-black border-1 ml-20 mt-40'>
+    <div className='flex items-center border-black border-1 mt-40 overflow-hidden max-w-[500px]'>
       {isLoading ? <Loader /> : <MessageContainer messages={messages} />}
       <ChatForm sendMessage={sendMessageHandler} />
     </div>

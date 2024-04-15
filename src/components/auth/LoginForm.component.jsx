@@ -36,7 +36,7 @@ const loginHandler = async (data) => {
         return
       }
       toast('Login success')
-      navigate('/')
+      navigate('/user')
   }
   catch (e) {
       toast(e.message)

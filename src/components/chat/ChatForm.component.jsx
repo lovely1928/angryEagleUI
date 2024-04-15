@@ -12,7 +12,7 @@ const ChatForm = ({ sendMessage }) => {
   }
   return (
     <form>
-      <input ref={newMessageRef} className="border border-gray-300 rounded-md py-2 px-4 focus:outline-none focus:border-blue-500" placeholder='Please type your message...' />
+      <input ref={newMessageRef} className="w-full border border-gray-300 rounded-md mb-1 py-2 px-4 focus:outline-none focus:border-blue-500 w-[500px]" placeholder='Please type your message...' />
       <Button type="submit" text="Send" onClick={sendMsgHandler} />
     </form>
   )
