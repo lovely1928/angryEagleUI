@@ -54,7 +54,6 @@ export default function UserList() {
     query,
   })
 
-  // console.log('custom hook resp',{loading,users,})
   const addUserBtnHandler = () => {
     navigate('create')
   }

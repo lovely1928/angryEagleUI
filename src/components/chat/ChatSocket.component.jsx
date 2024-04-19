@@ -13,18 +13,20 @@ const socket = io.connect("http://localhost:4000",
 )
 const ChatSocket = ({ id }) => {
   const navigate = useNavigate()
+  // console.log('rcid',id)
   let { id: recieverId } = useParams();
   if (!recieverId) recieverId = id
-  const { user } = useContext(UserContext)
+  const { user, loading: userContextLoading } = useContext(UserContext)
+  console.log('user', user)
   const [messages, setMessages] = useState([]);
   const query = useMemo(
-    () => ({
-      userId: user.id,
-      otherUserId: recieverId
-    }), [user.id, recieverId]
+    () => {
+      if (!userContextLoading) return ({
+        userId: user.id,
+        otherUserId: recieverId
+      })
+    }, [user.id, recieverId, userContextLoading]
   )
-
-
   const { loading, data = { data: {} }, error, message } = UseCallApi({
     url: 'http://localhost:4000/api/chat',
     method: 'get',
@@ -33,7 +35,8 @@ const ChatSocket = ({ id }) => {
 
   useEffect(() => {
     if (!loading && data) {
-      setMessages(x => [...x, ...data.data.messages])
+      // setMessages(x=>[])
+      setMessages(x => [...data.data.messages])
     }
   }, [loading])
   useEffect(() => {
@@ -57,14 +60,15 @@ const ChatSocket = ({ id }) => {
     }
     socket.emit('messageToServer', messageObj)
   }
+  let conditionalContainerClasses = typeof id !== "string" ? "mt-[60px] px-[20px] w-[1200px]" : ""
   return (
-    <div className='mt-[60px] px-[20px] w-[1200px] justify-between flex flex-col'>
+    <div className={conditionalContainerClasses + 'border-l border-grey pl-[5px] justify-between flex flex-col'}>
       {loading
         ?
         <Loader />
         :
         <>
-          <div onClick={() => navigate('/user/profile/' + data.data.user.id)} className='flex flex-row items-center fixed z-10 bg-white border-b border-gray-300 w-full shadow-sm'>
+          <div onClick={() => navigate('/user/profile/' + data.data.user.id)} className='flex flex-row items-center fixed z-10 bg-white w-full'>
             <img src={data.data.user.profileImage || '/samplePost.jpeg'} className="w-[45px] h-[45px] rounded-full" alt='post' />
             <strong className='px-2'>{data.data.user.firstName + " " + data.data.user.lastName}</strong>
           </div>

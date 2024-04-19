@@ -24,7 +24,6 @@ const Chat = () => {
     setClient(x=>cl)
     if(client){
     client.on("connect", () => {
-      console.log('Connected')
       client.subscribe(topic)
       client.on('message', (topic, message) => {
 

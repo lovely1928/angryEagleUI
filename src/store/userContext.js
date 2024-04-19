@@ -13,8 +13,8 @@ export const UserProvider = ({ children }) => {
     const token = localStorage.getItem('token') || null
     useEffect(() => {
         let func = async () => {
+
             try {
-                console.log(isLoggedIn)
                 setIsLoading(true)
                 // if (isLoggedIn) {
                     if (token) {

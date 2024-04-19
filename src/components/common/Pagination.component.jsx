@@ -18,9 +18,7 @@ export default function Pagination({ total, itemsPerPage, changeSkip, setCurrent
     const [currentPage, setCurrentPage] = useState(1)
     const [skip, setSkip] = useState(0)
     const [startPoint, setStartPoint] = useState(1)
-    // console.log('itemsperpage',itemsPerPage)
     const [endPoint, setEndPoint] = useState(itemsPerPage)
-    // console.log('data', { currentPage, skip, startPoint, endPoint })
     useEffect(() => {
         setSkip((currentPage - 1) * itemsPerPage)
         setStartPoint(skip + 1)

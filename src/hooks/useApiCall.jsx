@@ -16,9 +16,8 @@ export const UseCallApi = ({
 
     useEffect(() => {
         let func = async () => {
-
             try {
-                setLoading(true)    
+                setLoading(true)
                 const resp = await axios.request(
                     {
                         method: method,
@@ -30,7 +29,7 @@ export const UseCallApi = ({
                         }
                     }
                 )
-                // console.log(resp)
+
                 if (resp.status === 200) {
                     if (resp.data.data) setData(resp.data)
                     setLoading(false)
@@ -49,7 +48,6 @@ export const UseCallApi = ({
         }
         func()
 
-    }, [url,body, method,query])
-    // console.log('resp',{ message, data, error, loading })
+    }, [url, body, method, query])
     return { message, data, error, loading }
 }

@@ -15,7 +15,7 @@ const MessageContainer = ({messages}) => {
   return (
     <div className='mt-[43px] mx-[5px] flex flex-col relative max-h-[550px] w-[500px] overflow-auto'>
       {messages?.length > 0 ?
-        messages.map(x => <Message key={x.time} message={x} />) :
+        messages.map(x => <Message key={x.id} message={x} />) :
         <p>Your inbox is empty for now</p>
       }
     </div>
