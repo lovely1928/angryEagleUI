@@ -100,11 +100,11 @@ const UserForm = ({ update }) => {
     const labelClasses = 'mx-2'
 
     return (
-        <div >
+        <div className='flex justify-center items-center w-full h-full'>
             {/* <div>
                 <strong className='text-xl font-bold'>Register new user</strong>
             </div> */}
-            <Form onSubmit={handleSubmit(submitHandler)} method={isEdit ? "put" : "post" } className='flex flex-col' >
+            <Form  onSubmit={handleSubmit(submitHandler)} method={isEdit ? "put" : "post" } className='flex flex-col' >
                 <div className='grid grid-cols-2'>
 
                     <div>

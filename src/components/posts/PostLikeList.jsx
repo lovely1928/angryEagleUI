@@ -3,8 +3,9 @@ import { ImCross } from "react-icons/im";
 import Button from '../common/Button.component';
 import { UserContext } from '../../store/userContext';
 import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 const PostLikeList = ({ likes, onCloseModal, heading, noDataMessage = 'No data !!' }) => {
-    const {user} = useContext(UserContext)
+    const {user} = useSelector(state=> state.user)
     const navigate = useNavigate()
     return (
         <div className='w-[400px] h-[400px] p-2'>

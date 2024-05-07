@@ -6,15 +6,19 @@ import reportWebVitals from './reportWebVitals';
 import { RouterProvider } from 'react-router-dom';
 import router from './App';
 import { ToastContainer } from 'react-toastify';
+import { Provider } from 'react-redux';
 import 'react-toastify/dist/ReactToastify.css';
 import { UserContext, UserProvider } from './store/userContext';
+import { store } from './redux';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <UserProvider>
-     <RouterProvider router={router} />
-     <ToastContainer position="bottom-right" />
-    </UserProvider>
+    <Provider store={store}>
+      <UserProvider>
+      <RouterProvider router={router} />
+      <ToastContainer position="bottom-right" />
+      </UserProvider>
+    </Provider>
   </React.StrictMode>
 );
 

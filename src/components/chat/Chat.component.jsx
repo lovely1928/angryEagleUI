@@ -6,10 +6,11 @@ import ChatForm from './ChatForm.component'
 import { UserContext } from '../../store/userContext'
 import * as moment from 'moment-timezone';
 import mqtt from 'mqtt'
+import { useSelector } from 'react-redux'
 
 const Chat = () => {
   const { id: recieverId } = useParams();
-  const user = useContext(UserContext)
+  const {user} = useSelector(state=> state.user)
   
   const [isLoading, setIsLoading] = useState(false)
   const [client, setClient] = useState(null)

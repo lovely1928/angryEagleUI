@@ -13,10 +13,18 @@ import { FaSort } from "react-icons/fa"
 import { UseCallApi } from '../../hooks/useApiCall'
 import { AiFillEdit } from "react-icons/ai";
 import { AiFillDelete } from "react-icons/ai";
+import { useDispatch, useSelector } from 'react-redux'
+import { fetchUsers } from '../../redux/userStore/userReducer'
 export default function UserList() {
   const params = useParams()
+  let recus = useSelector(state=>state.user)
+  console.log('redux',recus)
   // let [users, setUsers] = useState([])
-  // let [total, setTotal] = useState(0)
+  // // let [total, setTotal] = useState(0)
+  // useEffect(()=>{
+  //   dispatch(fetchUsers())
+  //   console.log('redux',recus)
+  // },[])
   let [isLoading, setIsLoading] = useState(true)
   let [skip, setSkip] = useState(0)
   let [deleteDialogue, setDeleteDiaglogue] = useState(false)

@@ -7,6 +7,7 @@ import Loader from '../common/Loader.component'
 import MessageContainer from './MessageContainer.component'
 import ChatForm from './ChatForm.component'
 import { UseCallApi } from '../../hooks/useApiCall'
+import { useSelector } from 'react-redux'
 const token = localStorage.getItem('token')
 const socket = io.connect("http://localhost:4000",
   { auth: { token } }
@@ -16,7 +17,8 @@ const ChatSocket = ({ id }) => {
   // console.log('rcid',id)
   let { id: recieverId } = useParams();
   if (!recieverId) recieverId = id
-  const { user, loading: userContextLoading } = useContext(UserContext)
+  // const { user, loading: userContextLoading } = useContext(UserContext)
+  const {user, loading:userContextLoading,} = useSelector(state=> state.user)
   console.log('user', user)
   const [messages, setMessages] = useState([]);
   const query = useMemo(

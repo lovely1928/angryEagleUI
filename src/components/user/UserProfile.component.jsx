@@ -10,10 +10,11 @@ import { ImCross } from 'react-icons/im'
 import Button from '../common/Button.component'
 import PostLikeList from '../posts/PostLikeList'
 import { UserContext } from '../../store/userContext'
+import { useSelector } from 'react-redux'
 const UserProfile = () => {
 
     const token = localStorage.getItem('token')
-    const {user} = useContext(UserContext)
+    const {user} = useSelector(state=> state.user)
     const { id: userId } = useParams();
     const [isLoading, setIsLoading] = useState(true)
     const [profile, setProfile] = useState({})

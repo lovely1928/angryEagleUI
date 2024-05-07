@@ -1,10 +1,11 @@
 import * as moment from 'moment-timezone';
 import React, { useContext } from 'react'
 import { UserContext } from '../../store/userContext';
+import { useSelector } from 'react-redux';
 
 
 const Message = ({ message }) => {
-  const {user} = useContext(UserContext)
+  const {user} = useSelector(state=> state.user)
 
   const position = message.from === user.id ? 'justify-end' : 'justify-start'
   const bgColor = message.from === user.id ? 'bg-gradient-to-r from-sky-200 to-slate-50' : 'bg-gradient-to-r from-stone-200 to-slate-50';

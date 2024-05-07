@@ -7,6 +7,8 @@ import { IoIosNotificationsOutline } from "react-icons/io";
 import { IoIosNotifications } from "react-icons/io";
 import Notification from './common/Notification.component';
 import { BiSolidMessage } from "react-icons/bi";
+import { useDispatch, useSelector } from 'react-redux';
+import { logoutUserAction } from '../redux/userStore/userActions';
 const navigation = [
   { name: 'Tasks', href: 'task', current: false },
   { name: 'Users', href: 'user', current: true },
@@ -19,15 +21,18 @@ export const NavBar = () => {
   const [isNotificationBarOpen, setIsNotificationBarOpen] = useState(false)
   const [ isMessageBarOpen,setIsMessageBarOpen] = useState(false)
   const navigate = useNavigate()
-  const { user, loading: userContextLoading, setUser, setIsLoggedIn } = useContext(UserContext)
+  const dispatch = useDispatch()
+  // const { user, loading: userContextLoading, setUser, setIsLoggedIn } = useContext(UserContext)
+  const {user, loading:userContextLoading,} = useSelector(state=> state.user)
   const [headerOptions, setHeaderOptions] = useState(false)
   const showOptionHandler = () => {
     setHeaderOptions((x) => !x)
   }
   const logoutHanlder = () => {
     localStorage.removeItem('token');
-    setUser(null)
-    setIsLoggedIn(false)
+    dispatch(logoutUserAction());
+    // setUser(null)
+    // setIsLoggedIn(false)
     navigate('signin')
   }
   return (
