@@ -26,11 +26,11 @@ const PostCommentList = ({ comments, postId, onCloseModal }) => {
           }
         })
       if (likePostResponse.data.status === 'success') {
-        toast(likePostResponse.data.message)
+        toast.success(likePostResponse.data.message)
       }
     }
     catch (e) {
-      toast(e.message)
+      toast.error(e.message)
     }
   }
   return (

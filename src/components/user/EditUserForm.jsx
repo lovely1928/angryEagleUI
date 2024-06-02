@@ -72,12 +72,12 @@ const UpdateUserForm = ({ update }) => {
                 setError(() => true)
                 console.log('error occured while updating user')
             }
-            toast('User updated')
+            toast.success('User updated')
             reset()
             navigate(-1)
         }
         catch (e) {
-            toast(e.message)
+            toast.error(e.message)
         }
     }
         return (

@@ -27,11 +27,11 @@ const Post = ({ post }) => {
           }
         })
       if (likePostResponse.data.status === 'success') {
-        toast(likePostResponse.data.message)
+        toast.success(likePostResponse.data.message)
       }
     }
     catch (e) {
-      toast(e.message)
+      toast.error(e.message)
     }
   }
 
@@ -48,7 +48,7 @@ const Post = ({ post }) => {
       setShowLikeModal(x => true)
     }
     catch (e) {
-      toast(e.message)
+      toast.error(e.message)
     }
   }
   const getCommentListHandler = async () => {

@@ -13,7 +13,7 @@ import Message from './Message.component'
 const MessageContainer = ({messages}) => {
 
   return (
-    <div className='mt-[43px] mx-[5px] flex flex-col relative max-h-[550px] w-[500px] overflow-auto'>
+    <div className= 'mx-[5px] flex flex-col justify-end relative max-h-[5 00px] h-[400px] w-[500px] overflow-y'>
       {messages?.length > 0 ?
         messages.map(x => <Message key={x.id} message={x} />) :
         <p>Your inbox is empty for now</p>

@@ -14,8 +14,6 @@ const Message = ({ message }) => {
       <div className={`w-max p-3 rounded-lg ${bgColor} ${textColor} inline-block mb-2`}>
         <p className="text-sm">{message.message}</p>
         <p className={`text-xs text-gray-500  ${textColor}`}>{moment(message.time * 1000).format('YYYY-MM-DD HH:mm:ss')} </p>
-
-
       </div>
     </div>
   )

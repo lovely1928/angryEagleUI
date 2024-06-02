@@ -56,12 +56,12 @@ const PostForm = ({ update }) => {
             if (resp.status !== 201 || resp.status !== 200) {
                 console.log('error occured while creating user')
             }
-            toast('New post added')
+            toast.success('New post added')
             reset()
             navigate(-1)
         }
         catch (e) {
-            toast(e.message)
+            toast.error(e.message)
         }
     }
     const submitHandler = async (data, e) => {

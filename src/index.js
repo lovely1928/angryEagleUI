@@ -8,13 +8,18 @@ import router from './App';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { UserContext, UserProvider } from './store/userContext';
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
+
   <React.StrictMode>
+    <DndProvider backend={HTML5Backend}>
     <UserProvider>
      <RouterProvider router={router} />
-     <ToastContainer position="bottom-right" />
+     <ToastContainer position="bottom-right" draggable  theme='dark' />
     </UserProvider>
+    </DndProvider>
   </React.StrictMode>
 );
 

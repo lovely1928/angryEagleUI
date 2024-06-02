@@ -91,11 +91,11 @@ export default function UserList() {
       if (resp.status !== 201 || resp.status !== 200) {
         console.log('error occured while updating user')
       }
-      toast('User deleted')
+      toast.success('User deleted')
       // navigate(-1)
     }
     catch (e) {
-      toast(e.message)
+      toast.error(e.message)
     }
   }
 
@@ -106,7 +106,7 @@ export default function UserList() {
   }
 
   return (
-    <div className='flex flex-col p-14 w-[1200px]'>
+    <div className='flex flex-col px-14'>
       <div className='flex justify-between border-bottom items-center my-[6px]'>
         <div className='flex'>
           <strong className='text-xl font-bold mr-[12px]'>Users</strong>
@@ -123,7 +123,7 @@ export default function UserList() {
         <Loader />
         :
         <>
-          <table className='table-auto border-collapse mx-[10px] my-[12px]'>
+          <table className='table-auto border-collapse mx-[10px] my-[12px] overflow-auto'>
             <thead>
               <th></th>
               <th>

@@ -26,13 +26,13 @@ const PostGrid = ({ userId }) => {
                         }
                     })
                     if (resp.status !== 200) {
-                        toast(resp.message)
+                        toast.success(resp.message)
                         return
                     }
                     setPosts(resp.data.data)
                 } catch (e) {
                     console.log(e)
-                    toast(e.message)
+                    toast.error(e.message)
                 } finally {
                     setIsLoading(x => false)
                 }

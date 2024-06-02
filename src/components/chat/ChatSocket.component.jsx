@@ -17,7 +17,7 @@ const ChatSocket = ({ id }) => {
   let { id: recieverId } = useParams();
   if (!recieverId) recieverId = id
   const { user, loading: userContextLoading } = useContext(UserContext)
-  console.log('user', user)
+  // console.log('user', user)
   const [messages, setMessages] = useState([]);
   const query = useMemo(
     () => {
@@ -62,13 +62,13 @@ const ChatSocket = ({ id }) => {
   }
   let conditionalContainerClasses = typeof id !== "string" ? "mt-[60px] px-[20px] w-[1200px]" : ""
   return (
-    <div className={conditionalContainerClasses + 'border-l border-grey pl-[5px] justify-between flex flex-col'}>
+    <div className={conditionalContainerClasses + 'border-l border-grey pl-[5px] justify-between flex flex-col max-h-[600px] h-[600px] overflow-auto'}>
       {loading
         ?
         <Loader />
         :
         <>
-          <div onClick={() => navigate('/user/profile/' + data.data.user.id)} className='flex flex-row items-center fixed z-10 bg-white w-full'>
+          <div onClick={() => navigate('/user/profile/' + data.data.user.id)} className='flex flex-row items-center z-10 bg-white w-full'>
             <img src={data.data.user.profileImage || '/samplePost.jpeg'} className="w-[45px] h-[45px] rounded-full" alt='post' />
             <strong className='px-2'>{data.data.user.firstName + " " + data.data.user.lastName}</strong>
           </div>

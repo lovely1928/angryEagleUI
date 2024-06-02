@@ -62,12 +62,12 @@ const UserForm = ({ update }) => {
             if (resp.status !== 201 || resp.status !== 200) {
                 console.log('error occured while creating user')
             }
-            toast('New User registered')
+            toast.success('New User registered')
             reset()
             navigate(-1)
         }
         catch (e) {
-            toast(e.message)
+            toast.error(e.message)
         }
     }
 

@@ -31,14 +31,14 @@ const PostList = () => {
             }
           })
           if (resp.status !== 200) {
-            toast(resp.message)
+            toast.error(resp.message)
             return
           }
           setIsLoading(false)
           setPosts(resp.data.data)
         } catch (e) {
           console.log(e)
-          toast(e.message)
+          toast.error(e.message)
         } finally {
           setIsLoading(x => false)
         }
@@ -55,17 +55,8 @@ const PostList = () => {
       {
         loading
           ?
-          <Loader />
-          :
-
-        //   <div className='flex justify-between border-bottom items-center my-[6px]'>
-        //   <div>
-        //     <strong className='text-xl font-bold mr-[12px]'>Users</strong>
-        //     <input className='px-2 mx-2 border border-black border-solid rounded-md shadow-sm' type='text' onChange={handleSearch} placeholder='search user' />
-        //   </div>
-        //   <Button text='Add' onClick={addUserBtnHandler} />
-        // </div>
-          <div className='p-14 w-[1200px] m-auto'>
+          <Loader/>:
+          <div className='px-14 max-h-screen overflow-auto m-auto'>
             <div className='border-bottom border-grey flex my-[6px] flex-row justify-between items-center'>
               <h1 className='text-xl font-bold'>Posts</h1>
               <Button text='Add' onClick={() => navigate('add')} />

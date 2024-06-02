@@ -33,11 +33,11 @@ const UserProfile = () => {
                     }
                 })
             if (likePostResponse.data.status === 'success') {
-                toast(likePostResponse.data.message)
+                toast.success(likePostResponse.data.message)
             }
         }
         catch (e) {
-            toast(e.message)
+            toast.error(e.message)
         }
     }
     useEffect(() => {
@@ -53,7 +53,7 @@ const UserProfile = () => {
                     }
                 })
                 if (resp.status !== 200) {
-                    toast(resp.message)
+                    toast.error(resp.message)
                     return
                 }
                 setShowFollowerModal(x=>false)
@@ -62,7 +62,7 @@ const UserProfile = () => {
                 setProfile((x) => resp.data.data)
             } catch (e) {
                 console.log(e)
-                toast(e.message)
+                toast.error(e.message)
             } finally {
                 setIsLoading(x => false)
             }
