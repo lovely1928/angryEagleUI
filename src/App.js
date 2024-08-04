@@ -18,6 +18,7 @@ import UserProfile from './components/user/UserProfile.component';
 import ChatSocket from './components/chat/ChatSocket.component';
 import ConversationSummary from './components/chat/ConversationSummary.component';
 import { TaskLayout } from './components/task/TaskLayout.component';
+import ProjectLayout from './components/project/projectLayout';
 
 const PrivateRoute = ({ component: Component, authenticated, ...rest }) => {
   const token = localStorage.getItem('token')
@@ -40,7 +41,7 @@ const router = createBrowserRouter([
     element: <PrivateRoute component={NavBar} />,
     errorElement: <Error />,
     children: [
-      { index: true, path: 'task', element: <TaskLayout /> },
+      { index: true, path: 'task', element: <ProjectLayout /> },
       { path: 'post', element: <PostList /> },
       { path: 'post/add', element: <PostForm /> },
       { path: 'user', element: <UserList /> },
