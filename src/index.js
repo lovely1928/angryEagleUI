@@ -1,4 +1,6 @@
 import React from 'react';
+import { store } from './store/redux/store';
+import { Provider } from 'react-redux';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
@@ -10,16 +12,24 @@ import 'react-toastify/dist/ReactToastify.css';
 import { UserContext, UserProvider } from './store/userContext';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
+import { QueryClient, QueryClientProvider } from 'react-query';
+const queryClient = new QueryClient()
 const root = ReactDOM.createRoot(document.getElementById('root'));
+
+
 root.render(
 
   <React.StrictMode>
-    <DndProvider backend={HTML5Backend}>
-    <UserProvider>
-     <RouterProvider router={router} />
-     <ToastContainer position="bottom-right" draggable  theme='dark' />
-    </UserProvider>
-    </DndProvider>
+    <Provider store={store}>
+      <QueryClientProvider client={queryClient}>
+        <DndProvider backend={HTML5Backend}>
+          <UserProvider>
+            <RouterProvider router={router} />
+            <ToastContainer position="bottom-right" draggable theme='dark' />
+          </UserProvider>
+        </DndProvider>
+      </QueryClientProvider>
+    </Provider>
   </React.StrictMode>
 );
 

@@ -1,18 +1,12 @@
-import logo from './logo.svg';
 import './App.css';
-import { useState } from 'react';
 import { NavBar } from './components/Navbar.component';
 import {
   createBrowserRouter,
   Navigate,
-  RouterProvider,
 } from "react-router-dom";
 import Error from './components/common/Error.component';
-import TaskList from './components/task/TaskList.component';
-import Pagination from './components/common/Pagination.component';
 import UserList from './components/user/UserList';
 import Practice from './components/common/Practice.component';
-import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css'
 import UserForm from './components/user/UserForm';
 import PostList from './components/posts/PostList.component';
@@ -21,7 +15,6 @@ import SignIn from './components/auth/Signin.component';
 import SignUp from './components/auth/SignUp.component';
 import PostForm from './components/posts/PostForm.component';
 import UserProfile from './components/user/UserProfile.component';
-import Chat from './components/chat/Chat.component';
 import ChatSocket from './components/chat/ChatSocket.component';
 import ConversationSummary from './components/chat/ConversationSummary.component';
 import { TaskLayout } from './components/task/TaskLayout.component';
@@ -47,7 +40,7 @@ const router = createBrowserRouter([
     element: <PrivateRoute component={NavBar} />,
     errorElement: <Error />,
     children: [
-      { path: 'task', element: <TaskLayout /> },
+      { index: true, path: 'task', element: <TaskLayout /> },
       { path: 'post', element: <PostList /> },
       { path: 'post/add', element: <PostForm /> },
       { path: 'user', element: <UserList /> },

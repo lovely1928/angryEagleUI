@@ -62,7 +62,7 @@ const ChatSocket = ({ id }) => {
   }
   let conditionalContainerClasses = typeof id !== "string" ? "mt-[60px] px-[20px] w-[1200px]" : ""
   return (
-    <div className={conditionalContainerClasses + 'border-l border-grey pl-[5px] justify-between flex flex-col max-h-[600px] h-[600px] overflow-auto'}>
+    <div className={conditionalContainerClasses + 'border-l border-grey pl-[5px] justify-between flex flex-col'}>
       {loading
         ?
         <Loader />

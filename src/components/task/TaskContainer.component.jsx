@@ -8,15 +8,18 @@ import TaskForm from "./taskForm";
 import CustomModal from "../common/Modal.component";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { useDispatch } from "react-redux";
+import { fetchTaskThunk } from "../../store/redux/task/taskSlice";
 const TaskContainer = ({
   heading,
   component,
   children,
   ref,
-  updateContainerState,
+  // updateContainerState,
   case: cased,
 }) => {
   const token = localStorage.getItem("token");
+  const dispatch = useDispatch()
   // console.log(cased);
   const [showAdd, setShowAdd] = useState(false);
   const [{ canDrop, isOver, getItem, getResult }, drop] = useDrop(
@@ -38,7 +41,7 @@ const TaskContainer = ({
   );
   const handleDrop = async ({ id, case: currentTaskCase }) => {
     // console.log({ id, case: cased });
-    console.log({ id, cased });
+    // console.log({ id, cased });
     // updateContainerState({ id, case: cased, action: "remove" });
     const TASK_STATUS = {
       completed: "completed",
@@ -67,9 +70,10 @@ const TaskContainer = ({
     } else {
       message = "Task updated";
     }
-    updateContainerState({ id, case: heading, action: "add" });
-
+    // updateContainerState({ id, case: heading, action: "add" });
+    dispatch(fetchTaskThunk())
     toast.success(message);
+
   };
 
   // const shadowClass = "shadow-" + cased;
@@ -110,14 +114,14 @@ const TaskContainer = ({
       <CustomModal
         isOpen={showAdd}
         customStyles={{
-          width: "40%",
+          width: "50%",
           "box-shadow": "2px 2px 7px -3px black",
           margin: "auto",
         }}
         onClose2={() => {
           setShowAdd(false);
         }}
-      > 
+      >
         <div className="w-[500px] h-[250px]">
           <TaskForm showEditModal={(x) => setShowAdd(x)} />
         </div>

@@ -12,8 +12,10 @@ import moment from "moment-timezone";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { COLORS } from "../../utils/constants/colours";
+import { fetchTaskThunk } from "../../store/redux/task/taskSlice";
+import { useDispatch } from "react-redux";
 let customModalStyles = {
-  width: "40%",
+  width: "50%",
   "box-shadow": "2px 2px 7px -3px black",
   margin: "auto",
 };
@@ -22,6 +24,7 @@ const Task = (props) => {
   const token = localStorage.getItem("token");
   let [showEdit, setShowEdit] = useState(false);
   let [showDelete, setShowDelete] = useState(false);
+  const dispatch = useDispatch()
   let [showInfo, setShowInfo] = useState(false);
   const [{ isDragging }, drag, dragPreview] = useDrag(() => ({
     // "type" is required. It is used by the "accept" specification of drop targets.
@@ -48,13 +51,14 @@ const Task = (props) => {
       message = "Error while deleting task";
       toast.error(message);
     }
+    dispatch(fetchTaskThunk())
   };
   let colors = {
     task: COLORS.TASK.priority.border[task.priority],
     active: "border-purple-300",
     completed: "border-slate-500",
   };
-  console.log("color", colors);
+  // console.log("color", colors);
   let ringColors = {
     task: COLORS.TASK.priority.ring[task.priority],
     active: "ring-purple-500",

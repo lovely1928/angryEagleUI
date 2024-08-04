@@ -12,6 +12,8 @@ import Dropdown from "../common/Dropdown.component";
 import { UseCallApi } from "../../hooks/useApiCall";
 import moment, { isMoment } from "moment-timezone";
 import axios from "axios";
+import { fetchTaskThunk } from "../../store/redux/task/taskSlice";
+import { useDispatch } from "react-redux";
 const inputClasses =
   "border-1 border-black my-1 p-2 mx-[10px] m-1 mx-2 rounded-md shadow-sm";
 const taskSchema = z.object({
@@ -32,6 +34,7 @@ const TaskForm = ({ id, showEditModal, task }) => {
   const [allusers, setAllUsers] = useState([]);
   const [userPills, setUserPills] = useState([]);
   // use form hook
+  const dispatch = useDispatch();
 
   const query = useMemo(
     () => ({
@@ -157,6 +160,7 @@ const TaskForm = ({ id, showEditModal, task }) => {
         }
       }
       toast.success(message);
+      dispatch(fetchTaskThunk());
       reset();
       userPills.map((x) => handleUserPillDelete(x));
     } catch (e) {
@@ -165,7 +169,7 @@ const TaskForm = ({ id, showEditModal, task }) => {
   };
   return (
     <div>
-      <div className="flex pt-[5px] items-center gap-6 max-h-[800px] text-xl overflow-auto">
+      <div className="flex pt-[5px] items-center gap-6 text-xl overflow-auto">
         <FaArrowLeft onClick={() => setShowDelete(false)} />
         <h1 className="text-lg font-bold">
           {id ? "Update" : "Create New"} Task

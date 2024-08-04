@@ -10,11 +10,10 @@ const ConversationSummary = () => {
     url: "http://localhost:4000/api/chat/summary",
     method: "get",
   });
-  const navigate = useNavigate();
   const [recieverId, setRecieverId] = useState(null);
   useEffect(() => {
-    if (!loading) {
-      setRecieverId(data?.data[0].otherUserId);
+    if (!loading && data?.data[0]?.otherUserId) {
+      setRecieverId(data?.data[0]?.otherUserId);
     }
   }, [loading]);
 
@@ -23,11 +22,11 @@ const ConversationSummary = () => {
   };
 
   return (
-    <div className=" px-10 flex flex-col overflow-auto">
-      <div className="border-bottom border-grey flex mt-[16px] flex-row justify-between items-center">
+    <div className="px-10 flex flex-col overflow-auto">
+      <div className="border-bottom border-grey flex mt-[16px] flex-row justify-between items-center overflow-auto">
         <h1 className="text-xl font-bold">Your chats</h1>
       </div>
-      <div className="flex flex-row">
+      <div className="flex flex-row overflow-auto">
         {loading ? (
           <Loader />
         ) : (
@@ -64,11 +63,13 @@ const ConversationSummary = () => {
         )}
 
         <div>
-        {loading || !recieverId ? (
+          {loading ? (
             <Loader />
-        ) : (
+          ) : !loading && !recieverId ? (
+            <h1>Cannot find Chat</h1>
+          ) : (
             <ChatSocket id={recieverId} updateReciever={updateChat} />
-        )}
+          )}
         </div>
       </div>
     </div>

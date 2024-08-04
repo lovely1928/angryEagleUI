@@ -9,7 +9,18 @@ import { BsThreeDotsVertical } from "react-icons/bs";
 import { ImCross } from 'react-icons/im'
 import Button from '../common/Button.component'
 import PostLikeList from '../posts/PostLikeList'
+
+
 import { UserContext } from '../../store/userContext'
+
+const customModalStyles = {
+    width: "30%",
+    "box-shadow": "2px 2px 7px -3px black",
+    margin: "auto",
+    "max-height": "60%",
+    overflow: "auto",
+  };
+
 const UserProfile = () => {
 
     const token = localStorage.getItem('token')
@@ -133,10 +144,10 @@ const UserProfile = () => {
                             </div>
                         </Modal>
 
-                        <Modal isOpen={showFollowingModal}>
+                        <Modal  customStyles={customModalStyles}  onClose2={()=>setShowFollowingModal(false)} isOpen={showFollowingModal}>
                             <PostLikeList  onCloseModal={()=>setShowFollowingModal(false)} heading='Following' likes={profile.following.map(x=>x.following)} />
                         </Modal>
-                        <Modal isOpen={showFollowerModal}>
+                        <Modal customStyles={customModalStyles} onClose2={()=>setShowFollowerModal(false)} isOpen={showFollowerModal}>
                             <PostLikeList  onCloseModal={()=>setShowFollowerModal(false)} heading='Followers' likes={profile.followers.map(x=>x.follower)} />
                         </Modal>
 
