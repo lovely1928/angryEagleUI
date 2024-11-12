@@ -7,6 +7,9 @@ import { RiProgress6Fill } from "react-icons/ri";
 import { MdPendingActions } from "react-icons/md";
 import moment from "moment-timezone";
 import Switcher7 from "../common/Toggle2";
+import { UseCallApi } from "../../hooks/useApiCall";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 // let statusIcon = {
 //   active: MdPendingActions,
@@ -28,7 +31,23 @@ const TaskInfo = ({ task, onCloseModal }) => {
   let labelClass = "font-bold";
   let valueClass = "";
   let containerClass = "p-1 my-2 mx-2 flex gap-4 items-center";
-
+  const token = localStorage.getItem("token");
+  const changeSubTaskstatus = (id) => {
+    try {
+      const result = axios.patch(
+        "http://localhost:4000/api/task/subTask/changeStatus/" + id,
+        {},
+        {
+          headers: {
+            Authorization: "Bearer " + token,
+          },
+        }
+      );
+      return result;
+    } catch (e) {
+      toast(e.response.data.error);
+    }
+  };
   return (
     <div>
       <ImCross onClick={() => onCloseModal()} />
@@ -60,11 +79,15 @@ const TaskInfo = ({ task, onCloseModal }) => {
       </div>
       <div className="my-2 mx-2 ">
         <h2 className={labelClass + " mx-[3px] pb-[5px]"}>SubTasks</h2>
-        <ul className="flex w-1/2 shadow-md flex-col gap-2 p-1 mx-2 my-1 border-1">
+        <ul className="w-full flex shadow-md flex-col gap-2 p-1 mx-2 my-1 border-1">
           {subTasks.map((x) => (
             <li className="flex  border-1 border-bottom-gray gap-4 justify-between px-6 py-2">
               <p className={valueClass}>{x.title}</p>
-              <Switcher7 isDone={x.isDone} isCheckedDefault={x.isDone} />
+              <Switcher7
+                isDone={x.isDone}
+                isCheckedDefault={x.isDone}
+                handleChange={() => changeSubTaskstatus(x.id)}
+              />
             </li>
           ))}
         </ul>

@@ -11,7 +11,7 @@ import { FaArrowRightArrowLeft, FaJira } from "react-icons/fa6";
 import { FaUser } from "react-icons/fa";
 import { IoChatbubblesSharp, IoLogOut } from "react-icons/io5";
 import { BsPostcardHeartFill } from "react-icons/bs";
-
+import { HiMiniHome } from "react-icons/hi2";
 const navClasses =
   "border-bottom-1 border-black p-2 m-1 rounded-md hover:bg-red-700";
 export const SidebarItem = ({ icon, name }) => {
@@ -73,6 +73,16 @@ export const NavBar = () => {
                 </div>
               </div>
               <nav className="bg-black flex flex-col text-center text-white text-xl">
+                <NavLink key={Math.random()} className={navClasses} to="home">
+                  <div className="flex  items-center justify-center">
+                    <Tippy content="Task" placement="right">
+                      <div>
+                      <HiMiniHome/>
+                      </div>
+                    </Tippy>
+                    <p className={navItemP}>Home</p>
+                  </div>
+                </NavLink>
                 <NavLink key={Math.random()} className={navClasses} to="task">
                   <div className="flex  items-center justify-center">
                     <Tippy content="Task" placement="right">

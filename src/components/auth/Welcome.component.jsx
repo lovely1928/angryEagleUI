@@ -5,16 +5,13 @@ const Welcome = ({ children }) => {
     <div className="flex h-screen">
       <div className="w-1/2 bg-black flex flex-col shadow-lg items-center justify-center gap-4">
         <div>
-          <img className="w-[170px] mx-auto" src="/logo2.png" />
+          <img className="w-[200px] mx-auto rounded-full" src="/lovelyPic.jpg" />
         </div>
-        <div className="w-[400px]   py-2 my-2">
-          <h1 className="text-white font-semibold text-3xl">
-            Lorem ipsum dolor, sit amet
-          </h1>
+        <div className="w-[400px] py-2 my-2">
+          <h1 className="text-white font-semibold text-3xl">Hi there!</h1>
           <p className="text-white">
-            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Magni,
-            cupiditate et. Provident culpa eveniet iste sunt facere! Harum
-            architecto deleniti ullam? Natus, quaerat.
+            My name is <strong>Lovely</strong> and i'm fullstack developer. Kindly click on
+            button to know more about my work. Or you can also signup/signin just for more personalized experience.
           </p>
         </div>
       </div>

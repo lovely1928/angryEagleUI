@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useDrag } from "react-dnd";
 import { MdDelete } from "react-icons/md";
-import { FaArrowLeft } from "react-icons/fa";
 import { FaEdit } from "react-icons/fa";
 import CustomModal from "../common/Modal.component";
 import Button from "../common/Button.component";
@@ -14,6 +13,7 @@ import axios from "axios";
 import { COLORS } from "../../utils/constants/colours";
 import { fetchTaskThunk } from "../../store/redux/task/taskSlice";
 import { useDispatch } from "react-redux";
+import Thumbnails from "../common/Thumbnails.component";
 let customModalStyles = {
   width: "50%",
   "box-shadow": "2px 2px 7px -3px black",
@@ -21,10 +21,11 @@ let customModalStyles = {
 };
 const Task = (props) => {
   const task = props.task;
+  const team = props.team || [];
   const token = localStorage.getItem("token");
   let [showEdit, setShowEdit] = useState(false);
   let [showDelete, setShowDelete] = useState(false);
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   let [showInfo, setShowInfo] = useState(false);
   const [{ isDragging }, drag, dragPreview] = useDrag(() => ({
     // "type" is required. It is used by the "accept" specification of drop targets.
@@ -51,7 +52,7 @@ const Task = (props) => {
       message = "Error while deleting task";
       toast.error(message);
     }
-    dispatch(fetchTaskThunk())
+    dispatch(fetchTaskThunk());
   };
   let colors = {
     task: COLORS.TASK.priority.border[task.priority],
@@ -64,19 +65,17 @@ const Task = (props) => {
     active: "ring-purple-500",
     completed: "ring-slate-800",
   };
-  let borderColor = colors[props.case];
-  let ringColor = ringColors[props.case];
-  let draggClases = isDragging
-    ? " ring-[3px] ring-offset-[1px] ${ringColor}"
-    : "";
+  // let borderColor = colors["task"];
+  let borderColor = "border-gray-500";
+  let ringColor = ringColors["task"];
   return (
     <div
-      className={`mx-2 my-2 border-l-[12px] border-y-[2px] bg-white border-r-[1px] ${borderColor} rounded-md px-2 py-2 hover:shadow-md active:ring-[3px] ring-offset-[1px] ${ringColor}`}
+      className={`mx-2 my-2 shadow-md bg-gray-200 ${borderColor} rounded-md px-2 py-2 hover:shadow-md active:ring-[3px] ring-offset-[1px] ${ringColor}`}
       ref={drag}
       style={{ opacity: isDragging ? 0.3 : 1 }}
     >
       <div className="flex items-center justify-between">
-        <p className="text-lg font-bold">{task.title}</p>
+        <p className="text-lg font-semibold">{task.title}</p>
         <div className="flex gap-2">
           <FaInfoCircle
             onClick={() => setShowInfo(true)}
@@ -97,10 +96,16 @@ const Task = (props) => {
           )}
         </div>
       </div>
-      <p className="font-semibold">{task.description}</p>
-      <p className="text-sm">
-        {moment(task.dueDate * 1000).format("DD/MM/yyyy")}
-      </p>
+      <p className="text-sm">{task.description}</p>
+      <div className="flex justify-between">
+        <div className="flex items-center">
+          <p className="font-semibold text-sm">Due Date - </p>
+          <p className="text-sm">
+            {moment(task.dueDate * 1000).format("DD/MM/yyyy")}
+          </p>
+        </div>
+        <div>{team.length > 0 && <Thumbnails entities={team} />}</div>
+      </div>
       <CustomModal
         isOpen={showEdit}
         onClose2={() => {

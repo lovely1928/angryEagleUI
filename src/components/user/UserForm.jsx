@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { set, z } from "zod";
 import { Form, useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
+import {  z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Button from "../common/Button.component";
 import axios from "axios";
-import Alert from "../common/Alert.component";
 import { toast } from "react-toastify";
-import UpdateUserForm from "./EditUserForm";
 const SignUpSchema = z.object({
   email: z.string().email(),
   password: z.string().min(3).max(20),
@@ -86,7 +84,7 @@ const UserForm = ({ update, setPopUpState }) => {
     }
   };
   const submitHandler = async (data, e) => {
-    console.log(e);
+    
     if (isEdit) {
       await updateHandler(data);
     } else {
@@ -102,7 +100,6 @@ const UserForm = ({ update, setPopUpState }) => {
       </div>
       <Form
         onSubmit={handleSubmit(submitHandler)}
-        method={isEdit ? "put" : "post"}
         className="flex flex-col"
       >
         <div className="grid grid-cols-2">
@@ -187,7 +184,7 @@ const UserForm = ({ update, setPopUpState }) => {
             )}
           </div>
         </div>
-        <Button type="submit" text="Submit" onClick={submitHandler}></Button>
+        <Button type="submit" text="Submit"></Button>
         <Button text="Cancel" onClick={cancelBtnHandler} />
       </Form>
     </div>

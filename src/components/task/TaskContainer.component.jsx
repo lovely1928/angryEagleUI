@@ -1,13 +1,6 @@
 import React from "react";
-import { useState } from "react";
-import Button from "../common/Button.component";
 import { useDrop } from "react-dnd";
-import { CgInsertAfterR } from "react-icons/cg";
-import Modal from "../common/Modal.component";
-import TaskForm from "./taskForm";
-import CustomModal from "../common/Modal.component";
 import axios from "axios";
-import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { fetchTaskThunk } from "../../store/redux/task/taskSlice";
 const TaskContainer = ({
@@ -15,13 +8,13 @@ const TaskContainer = ({
   component,
   children,
   ref,
+  projectId,
   // updateContainerState,
   case: cased,
 }) => {
   const token = localStorage.getItem("token");
   const dispatch = useDispatch()
   // console.log(cased);
-  const [showAdd, setShowAdd] = useState(false);
   const [{ canDrop, isOver, getItem, getResult }, drop] = useDrop(
     () => ({
       // The type (or types) to accept - strings or symbols
@@ -40,9 +33,6 @@ const TaskContainer = ({
     []
   );
   const handleDrop = async ({ id, case: currentTaskCase }) => {
-    // console.log({ id, case: cased });
-    // console.log({ id, cased });
-    // updateContainerState({ id, case: cased, action: "remove" });
     const TASK_STATUS = {
       completed: "completed",
       active: "in_progress",
@@ -71,8 +61,8 @@ const TaskContainer = ({
       message = "Task updated";
     }
     // updateContainerState({ id, case: heading, action: "add" });
-    dispatch(fetchTaskThunk())
-    toast.success(message);
+    dispatch(fetchTaskThunk({id:projectId}))
+    // toast.success(message);
 
   };
 
@@ -84,9 +74,9 @@ const TaskContainer = ({
   const classObj = {
     active: "shadow-active",
     task: "shadow-task",
-    completed: "shadow-completed",
+    completed: "shadow-lg",
   };
-  const boxShadowClass = isOver ? ` ${classObj[cased]}` : "";
+  const boxShadowClass =  ' shadow-task'
 
   return (
     <div
@@ -94,38 +84,14 @@ const TaskContainer = ({
       // ref={ref}
       ref={drop}
       className={
-        "flex flex-col h-full rounded-md w-[35%] border-b-2" + boxShadowClass
+        "flex flex-col h-[100vh] rounded-md w-[35%] border-b-2" + boxShadowClass
       }
     >
-      <div className="flex  border-black  items-center justify-between px-1 pt-3">
-        <h1 className="font-bold text-lg">{heading}</h1>
-        {cased === "task" ? (
-          <CgInsertAfterR
-            onClick={() => {
-              setShowAdd(true);
-            }}
-            color="black"
-            size="30px"
-          />
-        ) : null}
+      <div className="flex border-black  items-center justify-between px-1 pt-3">
+        <h1 className="font-semibold m-auto text-lg">{heading}</h1>
       </div>
       {/* {canDrop ? "Release to drop" : "Drag a box here"} */}
       <div>{children}</div>
-      <CustomModal
-        isOpen={showAdd}
-        customStyles={{
-          width: "50%",
-          "box-shadow": "2px 2px 7px -3px black",
-          margin: "auto",
-        }}
-        onClose2={() => {
-          setShowAdd(false);
-        }}
-      >
-        <div className="w-[500px] h-[250px]">
-          <TaskForm showEditModal={(x) => setShowAdd(x)} />
-        </div>
-      </CustomModal>
     </div>
   );
 };

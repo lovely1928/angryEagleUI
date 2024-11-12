@@ -1,0 +1,1 @@
+1. To research how to render table rows and cols dynamicallly

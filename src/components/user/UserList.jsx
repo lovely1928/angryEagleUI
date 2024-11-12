@@ -171,7 +171,7 @@ export default function UserList() {
             <tbody>
               {data.data.map((person) => {
                 return (
-                  <tr key={person.id}>
+                  <tr  className="border-b" key={person.id}>
                     <td onClick={() => navigate("profile/" + person.id)}>
                       <img
                         className="w-10 h-10 rounded-full"

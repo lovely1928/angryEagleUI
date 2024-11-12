@@ -29,7 +29,7 @@ const taskSchema = z.object({
 });
 
 // component function start
-const TaskForm = ({ id, showEditModal, task }) => {
+const TaskForm = ({ id, showEditModal, task, projectId }) => {
   const token = localStorage.getItem("token");
   const [allusers, setAllUsers] = useState([]);
   const [userPills, setUserPills] = useState([]);
@@ -132,6 +132,7 @@ const TaskForm = ({ id, showEditModal, task }) => {
     try {
       data.team = userPills.map((x) => x.id);
       data.dueDate = moment(data.dueDate).unix();
+      data.projectId = projectId;
       let resp;
       let message;
       if (id) {

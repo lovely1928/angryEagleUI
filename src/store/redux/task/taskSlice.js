@@ -1,20 +1,22 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-import { act } from "react";
 const initialState = {
     loading: false,
     data: {},
     error: ''
 }
-const token = localStorage.getItem('token')
-export const fetchTaskThunk = createAsyncThunk('task/fetchTasks', async () => {
-    
+export const fetchTaskThunk = createAsyncThunk('task/fetchTasks', async ({ id, memberId, search }) => {
+    const token = localStorage.getItem('token')
+    console.log('token ', token)
     const response = await axios.get("http://localhost:4000/api/task", {
         headers: {
             'Authorization': 'Bearer ' + token
+        },
+        params: {
+            projectId: id, memberId, search
         }
     })
-    
+
     return response.data
 })
 export const taskSlice = createSlice({

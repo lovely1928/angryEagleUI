@@ -1,8 +1,14 @@
 import React, { useState } from "react";
+import { toast } from "react-toastify";
 
-const Switcher7 = ({ isCheckedDefault, isDone }) => {
+const Switcher7 = ({ isCheckedDefault, isDone, handleChange, id }) => {
   const [isChecked, setIsChecked] = useState(isDone);
-  const handleCheckboxChange = () => {
+  const handleCheckboxChange = async () => {
+    if (handleChange) {
+      const result = await handleChange(id);
+      if (result.status == 200) setIsChecked(!isChecked);
+      else toast("Cannot update subtask")
+    }
     setIsChecked(!isChecked);
   };
 
