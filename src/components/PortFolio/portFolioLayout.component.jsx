@@ -1,7 +1,12 @@
 import React from "react";
+import Intro from "./intro";
 
 const PortFolioLayout = () => {
-  return <div>PL</div>;
+  return (
+    <div>
+      <Intro />
+    </div>
+  );
 };
 
 export default PortFolioLayout;

@@ -12,7 +12,6 @@ const ArrFromNum = (num) => {
 }
 
 
-
 export default function Pagination({ total, itemsPerPage, changeSkip, setCurrentPage2 }) {
     const totalPages = total % itemsPerPage === 0 ? total / itemsPerPage : total / itemsPerPage + 1
     const [currentPage, setCurrentPage] = useState(1)

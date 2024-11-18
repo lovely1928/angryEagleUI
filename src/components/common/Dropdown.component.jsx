@@ -7,7 +7,12 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-export default function Dropdown({ heading, elements = [], addClickHandler }) {
+export default function Dropdown({
+  heading,
+  elements = [],
+  addClickHandler,
+  singleUse = false,
+}) {
   // console.log(elements);
   let handleUserAdd = (x) => {
     addClickHandler({ ...x });
@@ -60,7 +65,7 @@ export default function Dropdown({ heading, elements = [], addClickHandler }) {
                       <p>{x.title}</p>
                     </div>
 
-                    <FaPlusCircle size={20} />
+                    {!singleUse && <FaPlusCircle size={20} />}
                   </div>
                 </a>
               )}

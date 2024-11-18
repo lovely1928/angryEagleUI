@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { Schema, ZodEffects, set, z } from "zod";
+import { z } from "zod";
 import { useFieldArray, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "react-toastify";
@@ -7,13 +7,13 @@ import { FaPlusCircle } from "react-icons/fa";
 import Button from "../common/Button.component";
 import { FaArrowLeft } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
-import Pill from "../common/pill.component";
 import Dropdown from "../common/Dropdown.component";
 import { UseCallApi } from "../../hooks/useApiCall";
-import moment, { isMoment } from "moment-timezone";
+import moment from "moment-timezone";
 import axios from "axios";
 import { fetchTaskThunk } from "../../store/redux/task/taskSlice";
 import { useDispatch } from "react-redux";
+import { ImCross } from "react-icons/im";
 const inputClasses =
   "border-1 border-black my-1 p-2 mx-[10px] m-1 mx-2 rounded-md shadow-sm";
 const taskSchema = z.object({
@@ -32,7 +32,8 @@ const taskSchema = z.object({
 const TaskForm = ({ id, showEditModal, task, projectId }) => {
   const token = localStorage.getItem("token");
   const [allusers, setAllUsers] = useState([]);
-  const [userPills, setUserPills] = useState([]);
+  // const [userPills, setUserPills] = useState([]);
+  const [assignee, setAssignee] = useState(null);
   // use form hook
   const dispatch = useDispatch();
 
@@ -47,14 +48,17 @@ const TaskForm = ({ id, showEditModal, task, projectId }) => {
     []
   );
 
+  const selectAssignee = (assignee) => {
+    console.log("selected ass", assignee);
+    setAssignee(() => assignee);
+  };
   // fetching users for dropdown
   const {
     loading: userListLoading,
     data: userList,
-    error,
     message,
   } = UseCallApi({
-    url: "http://localhost:4000/api/user",
+    url: "http://localhost:4000/api/project/" + projectId,
     method: "get",
     query,
   });
@@ -63,9 +67,9 @@ const TaskForm = ({ id, showEditModal, task, projectId }) => {
   useEffect(() => {
     if (!userListLoading) {
       setAllUsers(() => [
-        ...userList.data.map((x) => ({
+        ...userList.data.team.map((x) => ({
           id: x.id,
-          title: `${x.firstName}`,
+          title: `${x.firstName + " " + x.lastName}`,
           image: x.profileImage,
         })),
       ]);
@@ -77,7 +81,6 @@ const TaskForm = ({ id, showEditModal, task, projectId }) => {
     formState: { errors },
     reset,
     control,
-    setValue,
   } = useForm({
     defaultValues: id
       ? async () => {
@@ -86,12 +89,19 @@ const TaskForm = ({ id, showEditModal, task, projectId }) => {
             let result = prev.filter((x) => !selectedIds.includes(x.id));
             return result;
           });
-          setUserPills((x) => [
-            ...task.members.map((x) => ({
-              title: x.user.firstName + " " + x.user.lastName,
-              image: x.user.profileImage,
-            })),
-          ]);
+          // setUserPills((x) => [
+          //   ...task.members.map((x) => ({
+          //     title: x.user.firstName + " " + x.user.lastName,
+          //     image: x.user.profileImage,
+          //   })),
+          // ]);
+          setAssignee({
+            title:
+              task.members[0].user.firstName +
+              " " +
+              task.members[0].user.lastName,
+            image: task.members[0].user.profileImage,
+          });
           return {
             ...task,
             subTasks: task.subTasks.map((x) => ({ text: x.title })),
@@ -104,38 +114,34 @@ const TaskForm = ({ id, showEditModal, task, projectId }) => {
     resolver: zodResolver(taskSchema),
   });
   // useFiledArray
-  const { fields, append, prepend, remove, swap, move, insert } = useFieldArray(
-    {
-      control, // control props comes from useForm (optional: if you are using FormProvider)
-      name: "subTasks", // unique name for your Field Array
-    }
-  );
-
-  // pill delete
-  const handleUserPillDelete = (z) => {
-    setUserPills((prev) => prev.filter((x) => x.id != z.id));
-    setAllUsers((prev) => [...prev, z]);
-  };
-  // add memeber
-  const addTeamMemberHandler = (user) => {
-    setUserPills((prev) => [...prev, user]);
-    setAllUsers((prev) => {
-      let result = prev.filter((x) => x.id != user.id);
-      return result;
-    });
-  };
+  const { fields, prepend, remove } = useFieldArray({
+    control, // control props comes from useForm (optional: if you are using FormProvider)
+    name: "subTasks", // unique name for your Field Array
+  });
   const setShowDelete = () => {
     showEditModal(false);
   };
   // form submit function
   const taskHandler = async (data) => {
     try {
-      data.team = userPills.map((x) => x.id);
-      data.dueDate = moment(data.dueDate).unix();
+      // data.team = userPills.map((x) => x.id);
+
       data.projectId = projectId;
       let resp;
       let message;
       if (id) {
+        if (assignee) {
+          data.team = [assignee];
+        } else {
+          toast.error("please select assigness");
+          return;
+        }
+        if (data.dueDate) {
+          data.dueDate = moment(data.dueDate).unix();
+        } else {
+          toast.error("please select due date");
+          return;
+        }
         resp = await axios.patch("http://localhost:4000/api/task/" + id, data, {
           headers: {
             Authorization: "Bearer " + token,
@@ -148,6 +154,18 @@ const TaskForm = ({ id, showEditModal, task, projectId }) => {
           message = "Error while updating task";
         }
       } else {
+        if (assignee) {
+          data.team = [assignee];
+        } else {
+          toast.error("please select assigness");
+          return;
+        }
+        if (data.dueDate) {
+          data.dueDate = moment(data.dueDate).unix();
+        } else {
+          toast.error("please select due date");
+          return;
+        }
         resp = await axios.post("http://localhost:4000/api/task", data, {
           headers: {
             Authorization: "Bearer " + token,
@@ -156,14 +174,14 @@ const TaskForm = ({ id, showEditModal, task, projectId }) => {
         if (resp.status === 201 || resp.status === 200) {
           message = "Task created";
         } else {
-          message = "Error while registering task";
+          message = resp?.error || "Error while registering task";
           console.log("error occured while creating user");
         }
       }
+      setAssignee(null);
       toast.success(message);
-      dispatch(fetchTaskThunk());
-      reset();
-      userPills.map((x) => handleUserPillDelete(x));
+      dispatch(fetchTaskThunk({ id: data.projectId }));
+      showEditModal(false);
     } catch (e) {
       toast.error(e.message);
     }
@@ -205,7 +223,7 @@ const TaskForm = ({ id, showEditModal, task, projectId }) => {
         <div>
           {fields.map((field, index) => {
             let class1 =
-              index != 0 ? " bg-gray-200 border-gray-300 shadow-sm" : "";
+              index !== 0 ? " bg-gray-200 border-gray-300 shadow-sm" : "";
             return (
               <div key={field.id} className="flex items-center gap-1">
                 <input
@@ -214,7 +232,7 @@ const TaskForm = ({ id, showEditModal, task, projectId }) => {
                   placeholder="Insert Sub task here.. "
                   {...register(`subTasks.${index}.text`)}
                 />
-                {index != 0 && (
+                {index !== 0 && (
                   <MdDelete
                     size={24}
                     color="red"
@@ -287,33 +305,41 @@ const TaskForm = ({ id, showEditModal, task, projectId }) => {
             <span className="text-red-600">{errors.priority.message}</span>
           )}
         </div>
-
         <div className="mx-2">
           <div className="flex items-center gap-4">
             <label className="font-bold" for="people">
-              Add Team members
+              Assignee
             </label>
-            <div className="my-[5px]">
-              {userListLoading ? (
-                "...Loading"
-              ) : (
-                <Dropdown
-                  addClickHandler={addTeamMemberHandler}
-                  heading={"Select team members"}
-                  elements={allusers}
+            {assignee ? (
+              <div className="flex gap-2 items-center justify-between rounded-md border-[2px] px-[10px] py-[5px] b-2 border-gray-300">
+                <img
+                  src={assignee.image}
+                  alt="user"
+                  className="rounded-full w-[24px] h-[24px]"
                 />
-              )}
-            </div>
-          </div>
-          <div className="flex gap-2 my-[10px] flex-wrap">
-            {userPills.map((x) => (
-              <Pill
-                key={x.id}
-                user={x}
-                handleUserPillDelete={handleUserPillDelete}
-                value={x.id}
-              />
-            ))}
+                <p>{assignee.title}</p>
+                <ImCross
+                  color="red"
+                  onClick={() => {
+                    setAssignee(() => null);
+                  }}
+                  size={12}
+                />
+              </div>
+            ) : (
+              <div className="my-[5px]">
+                {userListLoading ? (
+                  "...Loading"
+                ) : (
+                  <Dropdown
+                    singleUse={true}
+                    addClickHandler={selectAssignee}
+                    heading={"Select team members"}
+                    elements={allusers}
+                  />
+                )}
+              </div>
+            )}
           </div>
         </div>
         <div className="mt-2 flex gap-2 items-center">

@@ -73,7 +73,8 @@ export const ProjectLayout = () => {
       ]);
     }
   }, [userProjListLoading]);
-
+  const tdClass = "px-4";
+  const thClass = "flex items-center justify-center gap-1";
   return (
     <div className="px-2">
       <div className="border-bottom border-grey flex my-[6px] flex-row justify-between items-center">
@@ -83,12 +84,22 @@ export const ProjectLayout = () => {
       {userProjListLoading ? (
         <h1>....Loading</h1>
       ) : (
-        <>
+        <div className="ml-7">
           <table className="table-auto border-collapse mx-[10px] my-[12px] overflow-auto">
             <thead>
               <th>
-                <div className="flex items-center gap-1">
-                  <span> Title</span>{" "}
+                <div className={thClass}>
+                  <span>Id</span>
+                  <FaSort
+                    onClick={() => {
+                      onClickSortHandler("_id");
+                    }}
+                  />
+                </div>
+              </th>
+              <th>
+                <div className={thClass}>
+                  <span>Title</span>
                   <FaSort
                     onClick={() => {
                       onClickSortHandler("title");
@@ -97,8 +108,8 @@ export const ProjectLayout = () => {
                 </div>
               </th>
               <th>
-                <div className="flex items-center gap-1">
-                  <span> description</span>{" "}
+                <div className={thClass}>
+                  <span>description</span>
                   <FaSort
                     onClick={() => {
                       onClickSortHandler("description");
@@ -107,8 +118,8 @@ export const ProjectLayout = () => {
                 </div>
               </th>
               <th>
-                <div className="flex items-center gap-1">
-                  <span> Status</span>{" "}
+                <div className={thClass}>
+                  <span>Status</span>
                   <FaSort
                     onClick={() => {
                       onClickSortHandler("status");
@@ -117,8 +128,8 @@ export const ProjectLayout = () => {
                 </div>
               </th>
               <th>
-                <div className="flex items-center gap-1">
-                  <span> Action</span>
+                <div className={thClass}>
+                  <span>Action</span>
                 </div>
               </th>
             </thead>
@@ -128,17 +139,19 @@ export const ProjectLayout = () => {
               ) : (
                 projList.map((project) => {
                   return (
-                    <tr
-                      onClick={() => navigate(`/task/${project.id}`)}
-                      className="border-b "
-                      key={project.id}
-                    >
-                      <td>{project.title}</td>
-                      <td className="flex flex-wrap">{project.description}</td>
-                      <td>
+                    <tr className="border-b " key={project.id}>
+                      <td
+                        onClick={() => navigate(`/task/${project.id}`)}
+                        className={`${tdClass} font-semibold hover:text-red-600`}
+                      >
+                        {project.id}
+                      </td>
+                      <td className={tdClass}>{project.title}</td>
+                      <td className={tdClass}>{project.description}</td>
+                      <td className={tdClass}>
                         {project.isActive === true ? "Active" : "Inactive"}
                       </td>
-                      <td className="py-2 flex flex-row gap-2">
+                      <td className="px-4 py-2 flex flex-row gap-">
                         <Button
                           text="Edit"
                           onClick={() => {
@@ -185,7 +198,7 @@ export const ProjectLayout = () => {
           >
             <ProjectForm setPopupState={setShowProjForm} />
           </CustomModal>
-        </>
+        </div>
       )}
     </div>
   );

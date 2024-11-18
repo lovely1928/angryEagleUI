@@ -27,7 +27,7 @@ const Task = (props) => {
   let [showDelete, setShowDelete] = useState(false);
   const dispatch = useDispatch();
   let [showInfo, setShowInfo] = useState(false);
-  const [{ isDragging }, drag, dragPreview] = useDrag(() => ({
+  const [{ isDragging }, drag] = useDrag(() => ({
     // "type" is required. It is used by the "accept" specification of drop targets.
     type: "BOX",
     item: { id: props.id, case: props.case },
@@ -52,22 +52,17 @@ const Task = (props) => {
       message = "Error while deleting task";
       toast.error(message);
     }
-    dispatch(fetchTaskThunk());
+    dispatch(fetchTaskThunk({ id: props.task.projectId }));
   };
-  let colors = {
-    task: COLORS.TASK.priority.border[task.priority],
-    active: "border-purple-300",
-    completed: "border-slate-500",
-  };
-  // console.log("color", colors);
   let ringColors = {
     task: COLORS.TASK.priority.ring[task.priority],
     active: "ring-purple-500",
     completed: "ring-slate-800",
   };
-  // let borderColor = colors["task"];
   let borderColor = "border-gray-500";
   let ringColor = ringColors["task"];
+  const priorityColour = COLORS.TASK.priority.bg[task.priority];
+
   return (
     <div
       className={`mx-2 my-2 shadow-md bg-gray-200 ${borderColor} rounded-md px-2 py-2 hover:shadow-md active:ring-[3px] ring-offset-[1px] ${ringColor}`}
@@ -75,7 +70,11 @@ const Task = (props) => {
       style={{ opacity: isDragging ? 0.3 : 1 }}
     >
       <div className="flex items-center justify-between">
-        <p className="text-lg font-semibold">{task.title}</p>
+        <p
+          className={`font-bold text-[10px] ${priorityColour} w-fit p-[2px] px-[4px] rounded-md shadow-md`}
+        >
+          {task.priority}
+        </p>
         <div className="flex gap-2">
           <FaInfoCircle
             onClick={() => setShowInfo(true)}
@@ -87,7 +86,7 @@ const Task = (props) => {
             size="22px"
             color="red"
           />
-          {props.case != "completed" && (
+          {props.case !== "completed" && (
             <FaEdit
               onClick={() => setShowEdit(true)}
               size="22px"
@@ -96,6 +95,7 @@ const Task = (props) => {
           )}
         </div>
       </div>
+      <p className="text-lg font-semibold">{task.title}</p>
       <p className="text-sm">{task.description}</p>
       <div className="flex justify-between">
         <div className="flex items-center">
@@ -104,7 +104,9 @@ const Task = (props) => {
             {moment(task.dueDate * 1000).format("DD/MM/yyyy")}
           </p>
         </div>
-        <div>{team.length > 0 && <Thumbnails entities={team} />}</div>
+        <div className="mr-2">
+          {team.length > 0 && <Thumbnails entities={team} />}
+        </div>
       </div>
       <CustomModal
         isOpen={showEdit}
