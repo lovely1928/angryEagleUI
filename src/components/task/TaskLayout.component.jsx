@@ -5,7 +5,7 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchTaskThunk } from "../../store/redux/task/taskSlice";
 import Loader from "../common/Loader.component";
-import { useParams } from "react-router-dom";
+import { Outlet, useNavigate, useParams } from "react-router-dom";
 import Thumbnails from "../common/Thumbnails.component";
 import { AiOutlineSearch } from "react-icons/ai";
 import Button from "../common/Button.component";
@@ -28,6 +28,7 @@ export const TaskLayout = () => {
   const [proj2, setProj2] = useState(null);
   const [showAdd, setShowAdd] = useState(false);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   useEffect(() => {
     dispatch(fetchTaskThunk({ id }));
   }, []);
@@ -89,58 +90,21 @@ export const TaskLayout = () => {
       <div>
         <p className="font-semibold text-xl my-2">Tasks</p>
       </div>
-      {loading ? (
-        <Loader />
-      ) : (
-        <div className="flex gap-2 justify-between">
-          {/* Card for pending tasks */}
-          <TaskContainer projectId={id} case="task" heading="Current Tasks">
-            <div>
-              {data?.data?.active?.map((x) => (
-                <Task
-                  key={x.id}
-                  case="task"
-                  id={x.id}
-                  task={x}
-                  team={x.members.map((y) => y.user)}
-                />
-              ))}
-            </div>
-          </TaskContainer>
-          {/* Card for active tasks */}
-          <TaskContainer projectId={id} heading="Active Tasks" case="active">
-            <div>
-              {data?.data?.inProgress?.map((x) => (
-                <Task
-                  key={x.id}
-                  case="active"
-                  id={x.id}
-                  task={x}
-                  team={x.members.map((y) => y.user)}
-                />
-              ))}
-            </div>
-          </TaskContainer>
-          {/* Card for completed tasks */}
-          <TaskContainer
-            projectId={id}
-            case="completed"
-            heading="Completed Tasks"
-          >
-            <div>
-              {data?.data?.completed?.map((x) => (
-                <Task
-                  key={x.id}
-                  case="completed"
-                  id={x.id}
-                  task={x}
-                  team={x.members.map((y) => y.user)}
-                />
-              ))}
-            </div>
-          </TaskContainer>
-        </div>
-      )}
+      <div>
+        <button
+          className="px-4 py-2 bg-gray-500 text-white text-l rounded-ss-xl mr-[1px]"
+          onClick={() => navigate("./")}
+        >
+          Tasks
+        </button>
+        <button
+          className="px-4 py-2 bg-gray-500 text-white text-l "
+          onClick={() => navigate("analytics")}
+        >
+          Analytics
+        </button>
+      </div>
+      <Outlet />
       <CustomModal
         isOpen={showAdd}
         customStyles={{

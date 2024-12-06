@@ -20,6 +20,8 @@ import ConversationSummary from './components/chat/ConversationSummary.component
 import { TaskLayout } from './components/task/TaskLayout.component';
 import ProjectLayout from './components/project/projectLayout';
 import PortFolioLayout from './components/PortFolio/portFolioLayout.component';
+import TaskList from './components/task/TaskList.component';
+import TaskAnalytics from './components/task/taskAnalytics.component';
 
 const PrivateRoute = ({ component: Component, authenticated, ...rest }) => {
   const token = localStorage.getItem('token')
@@ -43,10 +45,17 @@ const router = createBrowserRouter([
     errorElement: <Error />,
     children: [
       // Home
-      { index: true, path: 'home', element: <PortFolioLayout /> },
+      { index: true, element: <PortFolioLayout /> },
       // task/projects
       { path: 'task', element: <ProjectLayout /> },
-      { path: 'task/:id', element: <TaskLayout /> },
+      {
+        path: 'task/:id',
+        element: <TaskLayout />,
+        children: [
+          { index: true, element: <TaskList /> },
+          { path: 'analytics', element: <TaskAnalytics /> }
+        ]
+      },
       // posts
       { path: 'post', element: <PostList /> },
       { path: 'post/add', element: <PostForm /> },

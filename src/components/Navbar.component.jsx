@@ -73,7 +73,7 @@ export const NavBar = () => {
                 </div>
               </div>
               <nav className="bg-black flex flex-col text-center text-white text-xl">
-                <NavLink key={Math.random()} className={navClasses} to="home">
+                <NavLink key={Math.random()} className={navClasses} to="">
                   <div className="flex  items-center justify-center">
                     <Tippy content="Task" placement="right">
                       <div>

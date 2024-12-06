@@ -25,11 +25,11 @@ const LoginForm = () => {
   const { setIsLoggedIn } = useContext(UserContext);
   const loginHandler = async (data) => {
     try {
-      
       const resp = await axios.post(
         "http://localhost:4000/api/auth/login",
         data
       );
+      debugger
       if (resp.status !== 201 || resp.status !== 200) {
       }
       if (resp.data.token) {

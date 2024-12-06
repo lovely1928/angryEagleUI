@@ -15,6 +15,8 @@ import { AiFillEdit } from "react-icons/ai";
 import { AiFillDelete } from "react-icons/ai";
 import CustomModal from "../common/Modal.component";
 import UserForm from "./UserForm";
+import { useQuery } from "@tanstack/react-query";
+import { fetchUsers } from "../../api/user/user";
 export default function UserList() {
   const params = useParams();
   // let [users, setUsers] = useState([])
@@ -43,19 +45,17 @@ export default function UserList() {
     }),
     [sortField, sortOrder, limit, searchField, pageNumber]
   );
-
-  // This will help to explain use memo concept
-  // const query ={
-  //     sort: sortField,
-  //     order: sortOrder,
-  //     limit: limit,
-  //     search: searchField,
-  //     page: pageNumber
-  //   }
-  const { loading, data, error, message } = UseCallApi({
-    url: "http://localhost:4000/api/user",
-    method: "get",
-    query,
+  const { status, data, error } = useQuery({
+    queryKey: ["users"],
+    queryFn: () => {
+      return fetchUsers({
+        sort: sortField,
+        order: sortOrder,
+        limit: limit,
+        search: searchField,
+        page: pageNumber,
+      });
+    },
   });
 
   const addUserBtnHandler = () => {
@@ -125,7 +125,7 @@ export default function UserList() {
         <Button text="Add" onClick={() => setShowAddUesr(() => !showAddUser)} />
       </div>
 
-      {loading ? (
+      {status === "pending" ? (
         <Loader />
       ) : (
         <>
@@ -169,43 +169,47 @@ export default function UserList() {
               </th>
             </thead>
             <tbody>
-              {data.data.map((person) => {
-                return (
-                  <tr  className="border-b" key={person.id}>
-                    <td onClick={() => navigate("profile/" + person.id)}>
-                      <img
-                        className="w-10 h-10 rounded-full"
-                        alt="user"
-                        src={person.profileImage || "/defaultProfile.png"}
-                      />
-                    </td>
-                    <td>{person.firstName + " " + person.lastName}</td>
-                    <td>{person.email}</td>
-                    <td>{person.phone}</td>
-                    <td className="py-2 flex flex-row gap-2">
-                      <Button
-                        text="Edit"
-                        onClick={() => {
-                          EditHandler(person.id);
-                        }}
-                      />
-                      {/* <AiFillEdit style={{ color: '#17a132' }} /> */}
-                      <Button
-                        color="bg-red-600"
-                        onClick={() => {
-                          deleteUserHandler(person.id);
-                        }}
-                        text="Delete"
-                      />
-                      {/* <AiFillDelete
+              {status === "success" ? (
+                data.data.data.map((person) => {
+                  return (
+                    <tr className="border-b" key={person.id}>
+                      <td onClick={() => navigate("profile/" + person.id)}>
+                        <img
+                          className="w-10 h-10 rounded-full"
+                          alt="user"
+                          src={person.profileImage || "/defaultProfile.png"}
+                        />
+                      </td>
+                      <td>{person.firstName + " " + person.lastName}</td>
+                      <td>{person.email}</td>
+                      <td>{person.phone}</td>
+                      <td className="py-2 flex flex-row gap-2">
+                        <Button
+                          text="Edit"
+                          onClick={() => {
+                            EditHandler(person.id);
+                          }}
+                        />
+                        {/* <AiFillEdit style={{ color: '#17a132' }} /> */}
+                        <Button
+                          color="bg-red-600"
+                          onClick={() => {
+                            deleteUserHandler(person.id);
+                          }}
+                          text="Delete"
+                        />
+                        {/* <AiFillDelete
                         style={{
                           color: '#e81111',
                         }}
                       /> */}
-                    </td>
-                  </tr>
-                );
-              })}
+                      </td>
+                    </tr>
+                  );
+                })
+              ) : (
+                <p>No data found</p>
+              )}
             </tbody>
           </table>
           <CustomModal
@@ -214,7 +218,7 @@ export default function UserList() {
               width: "30%",
               "box-shadow": "2px 2px 7px -3px black",
               margin: "auto",
-              height: "auto"
+              height: "auto",
             }}
             onClose2={() => {
               setShowAddUesr(false);
