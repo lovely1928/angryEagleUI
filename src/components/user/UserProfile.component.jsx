@@ -1,159 +1,219 @@
-import axios from 'axios'
-import React, { useContext, useEffect, useState } from 'react'
-import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
-import { toast } from 'react-toastify'
-import Post from '../posts/Post.component'
-import PostGrid from '../posts/postGrid.component'
-import Modal from '../common/Modal.component'
+import axios from "axios";
+import React, { useContext, useEffect, useState } from "react";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { toast } from "react-toastify";
+import Post from "../posts/Post.component";
+import PostGrid from "../posts/postGrid.component";
+import Modal from "../common/Modal.component";
 import { BsThreeDotsVertical } from "react-icons/bs";
-import { ImCross } from 'react-icons/im'
-import Button from '../common/Button.component'
-import PostLikeList from '../posts/PostLikeList'
+import { ImCross } from "react-icons/im";
+import Button from "../common/Button.component";
+import PostLikeList from "../posts/PostLikeList";
 
-
-import { UserContext } from '../../store/userContext'
+import { UserContext } from "../../store/userContext";
+import ProfilePic from "../common/profilePic.component";
+import VerticalInfo from "../common/VerticalInfo";
+import KeyPairInfo from "../common/KeyPairInfo";
 
 const customModalStyles = {
-    width: "30%",
-    "box-shadow": "2px 2px 7px -3px black",
-    margin: "auto",
-    "max-height": "60%",
-    overflow: "auto",
-  };
+  width: "30%",
+  "box-shadow": "2px 2px 7px -3px black",
+  margin: "auto",
+  "max-height": "60%",
+  overflow: "auto",
+};
 
 const UserProfile = () => {
+  const token = localStorage.getItem("token");
+  const { user } = useContext(UserContext);
+  const { id: userId } = useParams();
+  const [isLoading, setIsLoading] = useState(true);
+  const [profile, setProfile] = useState({});
+  const navigate = useNavigate();
+  const [moreInfoModal, setMoreInfoModal] = useState(false);
+  const [showFollowerModal, setShowFollowerModal] = useState(false);
+  const [showFollowingModal, setShowFollowingModal] = useState(false);
 
-    const token = localStorage.getItem('token')
-    const {user} = useContext(UserContext)
-    const { id: userId } = useParams();
-    const [isLoading, setIsLoading] = useState(true)
-    const [profile, setProfile] = useState({})
-    const navigate = useNavigate()
-    const [moreInfoModal, setMoreInfoModal] = useState(false)
-    const [showFollowerModal, setShowFollowerModal] = useState(false)
-    const [showFollowingModal, setShowFollowingModal] = useState(false)
-
-    const clickFollowBtnHandler = async () => {
-        try {
-            const likePostResponse = await axios.post('http://localhost:4000/api/follow', {
-                userId
-            },
-                {
-                    headers: {
-                        Authorization: 'Bearer ' + token
-                    }
-                })
-            if (likePostResponse.data.status === 'success') {
-                toast.success(likePostResponse.data.message)
-            }
+  const clickFollowBtnHandler = async () => {
+    try {
+      const likePostResponse = await axios.post(
+        "http://localhost:4000/api/follow",
+        {
+          userId,
+        },
+        {
+          headers: {
+            Authorization: "Bearer " + token,
+          },
         }
-        catch (e) {
-            toast.error(e.message)
-        }
+      );
+      if (likePostResponse.data.status === "success") {
+        toast.success(likePostResponse.data.message);
+      }
+    } catch (e) {
+      toast.error(e.message);
     }
-    useEffect(() => {
-        const token = localStorage.getItem('token');
+  };
+  useEffect(() => {
+    const token = localStorage.getItem("token");
 
-        // if (!token) navigate('signIn')
-        let func = async () => {
-            try {
-                const resp = await axios.get('http://localhost:4000/api/user/profile', {
-                    params: { userId },
-                    headers: {
-                        'Authorization': 'Bearer ' + token
-                    }
-                })
-                if (resp.status !== 200) {
-                    toast.error(resp.message)
-                    return
-                }
-                setShowFollowerModal(x=>false)
-                setShowFollowingModal(x=>false)
-                setMoreInfoModal(x=>false)
-                setProfile((x) => resp.data.data)
-            } catch (e) {
-                console.log(e)
-                toast.error(e.message)
-            } finally {
-                setIsLoading(x => false)
-            }
+    // if (!token) navigate('signIn')
+    let func = async () => {
+      try {
+        const resp = await axios.get("http://localhost:4000/api/user/profile", {
+          params: { userId },
+          headers: {
+            Authorization: "Bearer " + token,
+          },
+        });
+        if (resp.status !== 200) {
+          toast.error(resp.message);
+          return;
         }
-        func()
-    }, [userId])
-    return (
-        <>
-            {
-                !profile?.id ?
-                    <h1>...Loading</h1>
-                    :
-                    <div className='my-16'>
-                        <div className='mx-2 flex flex-row items-center'>
-                            <div className='mr-10'>
-                                <img src={profile.profileImage} width={150} height={150} alt='profile' />
-                            </div>
-                            <div className='flex flex-col'>
-                                <div className='flex flex-row gap-4'>
-                                    <div className='flex flex-col items-center border-right'>
-                                        <p className='text-lg font-semibold'>{profile.posts?.length || 0}</p>
-                                        <p className='text-2xl font-semibold'>Posts</p>
-                                    </div>
-                                    <div onClick={()=>setShowFollowerModal(true)} className='flex flex-col items-center border-right'>
-                                        <p className='text-lg font-semibold'>{profile.followerCount || 0}</p>
-                                        <p className='text-2xl font-semibold'>Followers</p>
-                                    </div>
-                                    <div onClick={()=>setShowFollowingModal(true)} className='flex flex-col items-center border-right'>
-                                        <p className='text-lg font-semibold'>{profile.followingCount || 0}</p>
-                                        <p className='text-2xl font-semibold'>Following</p>
-                                    </div>
-                                    <div onClick={() => setMoreInfoModal(true)} className='p-2'>
-                                        <BsThreeDotsVertical />
-                                    </div>
-                                </div>
-                                {userId && userId !==user.id  && <Button text={ profile.isLoggedInUserFollowProfileStatus || 'Follow'} onClick={clickFollowBtnHandler} />}
-                                <Button text="Message" onClick={()=>navigate('/user/chat/'+ userId)}/>
-                            </div>
-                        </div>
-                        <div className='p-1' >
-                            <h1 className='border-bottom border-black text-xl font-bold'>Posts</h1>
-                            <PostGrid userId={userId} />
-                        </div>
-                        <Modal isOpen={moreInfoModal} >
-                            <div className='p-2 w-[300px]'>
-                                <div className='flex flex-row justify-between border-bottom border-black items-center'>
-                                    <p className='text-lg font-semibold my-1'>More information</p>
-                                    <ImCross onClick={() => setMoreInfoModal((x) => false)} />
-                                </div>
-                                <div className='grid grid-cols-1' >
-                                    <div className='mr-5 my-2'>
-                                        <strong>Full Name</strong>
-                                        <p>{profile?.firstName + profile.lastName || ''}</p>
-                                    </div>
-                                    <div className='mr-5 my-2'>
-                                        <strong>Email</strong>
-                                        <p>{profile.email}</p>
-                                    </div>
-                                    <div className='mr-5 my-2'>
-                                        <strong>Phone</strong>
-                                        <p>{profile.phone}</p>
-                                    </div>
-                                    <div className='mr-5 my-2'>
-                                        <strong>Status</strong>
-                                        <p>{profile.isActive ? 'Active' : 'Inactive'}</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </Modal>
+        setShowFollowerModal((x) => false);
+        setShowFollowingModal((x) => false);
+        setMoreInfoModal((x) => false);
+        setProfile((x) => resp.data.data);
+      } catch (e) {
+        console.log(e);
+        toast.error(e.message);
+      } finally {
+        setIsLoading((x) => false);
+      }
+    };
+    func();
+  }, [userId]);
+  return (
+    <>
+      {!profile?.id ? (
+        <h1>...Loading</h1>
+      ) : (
+        <div className="p-2">
+          <div className="flex items-center gap-4">
+            {/* PROFILE PIC */}
+            <div className="w-[15%] h-[167px] overflow-hidden rounded-full border-gray border-[1px] shadow-md">
+              <ProfilePic
+                url={profile.profileImage}
+                width={"w-full"}
+                height={"h-full"}
+              />
+            </div>
 
-                        <Modal  customStyles={customModalStyles}  onClose2={()=>setShowFollowingModal(false)} isOpen={showFollowingModal}>
-                            <PostLikeList  onCloseModal={()=>setShowFollowingModal(false)} heading='Following' likes={profile.following.map(x=>x.following)} />
-                        </Modal>
-                        <Modal customStyles={customModalStyles} onClose2={()=>setShowFollowerModal(false)} isOpen={showFollowerModal}>
-                            <PostLikeList  onCloseModal={()=>setShowFollowerModal(false)} heading='Followers' likes={profile.followers.map(x=>x.follower)} />
-                        </Modal>
+            <div className="flex flex-col w-[60%] gap-2">
+              {/*NAME, FOLLOW AND MSG BUTTON */}
+              <div className="flex items-center">
+                <p className="text-xl font-semibold">
+                  {profile.firstName + " " + profile.lastName}
+                </p>
+                {userId && userId !== user.id && (
+                  <Button
+                    text={profile.isLoggedInUserFollowProfileStatus || "Follow"}
+                    color={
+                      profile.isLoggedInUserFollowProfileStatus
+                        ? "bg-black"
+                        : "bg-blue-500"
+                    }
+                    onClick={clickFollowBtnHandler}
+                    textSize="small"
+                  />
+                )}
+                <Button
+                  text="Message"
+                  onClick={() => navigate("/user/chat/" + userId)}
+                  textSize="small"
+                />
+              </div>
+              {/* FOLLOW, FOLLOWER AND POST COUNT INFO */}
+              <div className="flex flex-row gap-4">
+                <VerticalInfo
+                  title={"Posts"}
+                  count={profile.posts?.length || 0}
+                  onClickHandler={() => {
+                    // this function will scroll down to posts section
+                  }}
+                />
+                <VerticalInfo
+                  title={"Followers"}
+                  count={profile.followerCount || 0}
+                  onClickHandler={setShowFollowerModal}
+                />
+                <VerticalInfo
+                  title={"Following"}
+                  count={profile.followingCount || 0}
+                  onClickHandler={setShowFollowingModal}
+                />
+                {/* <div onClick={() => setMoreInfoModal(true)} className="p-2">
+                  <BsThreeDotsVertical />
+                </div> */}
+                {/* FOLLOW AND MESSAGE BUTTONS */}
+              </div>
+              {/* BIO SECTION */}
+              <div>
+                Lorem ipsum dolor, sit amet consectetur adipisicing elit.
+                Assumenda ipsa ad non laboriosam architecto iure iste ea quos
+                quas consectetur odio, vero magni!
+              </div>
+            </div>
+          </div>
 
-                    </div>}
-        </>
-    )
-}
+          <div className="flex flex-col">
+            <h1 className="text-xl font-bold">Posts</h1>
+            <PostGrid userId={userId} />
+          </div>
 
-export default UserProfile
+          <Modal isOpen={moreInfoModal}>
+            <div className="p-2 w-[300px]">
+              <div className="flex flex-row justify-between border-bottom border-black items-center">
+                <p className="text-lg font-semibold my-1">More information</p>
+                <ImCross onClick={() => setMoreInfoModal((x) => false)} />
+              </div>
+              <div className="grid grid-cols-1">
+                <div className="mr-5 my-2">
+                  <strong>Full Name</strong>
+                  <p>{profile?.firstName + profile.lastName || ""}</p>
+                </div>
+                <div className="mr-5 my-2">
+                  <strong>Email</strong>
+                  <p>{profile.email}</p>
+                </div>
+                <div className="mr-5 my-2">
+                  <strong>Phone</strong>
+                  <p>{profile.phone}</p>
+                </div>
+                <div className="mr-5 my-2">
+                  <strong>Status</strong>
+                  <p>{profile.isActive ? "Active" : "Inactive"}</p>
+                </div>
+              </div>
+            </div>
+          </Modal>
+
+          <Modal
+            customStyles={customModalStyles}
+            onClose2={() => setShowFollowingModal(false)}
+            isOpen={showFollowingModal}
+          >
+            <PostLikeList
+              onCloseModal={() => setShowFollowingModal(false)}
+              heading="Following"
+              likes={profile.following.map((x) => x.following)}
+            />
+          </Modal>
+          <Modal
+            customStyles={customModalStyles}
+            onClose2={() => setShowFollowerModal(false)}
+            isOpen={showFollowerModal}
+          >
+            <PostLikeList
+              onCloseModal={() => setShowFollowerModal(false)}
+              heading="Followers"
+              likes={profile.followers.map((x) => x.follower)}
+            />
+          </Modal>
+        </div>
+      )}
+    </>
+  );
+};
+
+export default UserProfile;

@@ -17,9 +17,9 @@ const EditUserSchema = z.object({
 });
 // type SignUpSchemaType = z.infer<typeof SignUpSchema>;
 const inputClasses = "border-1 border-black my-1 p-1 rounded-sm";
-const UpdateUserForm = ({ update }) => {
+const UpdateUserForm = ({ id, setPopUpState }) => {
   const params = useParams();
-  const { id: userId } = params;
+  const userId = id || params.id;
   const {
     register,
     handleSubmit,
@@ -28,7 +28,8 @@ const UpdateUserForm = ({ update }) => {
     setValue,
   } = useForm({ resolver: zodResolver(EditUserSchema) });
   const cancelBtnHandler = () => {
-    navigate(-1);
+    // navigate(-1);
+    setPopUpState(false);
     // window.history.back()
   };
   useEffect(() => {
@@ -80,101 +81,87 @@ const UpdateUserForm = ({ update }) => {
         console.log("error occured while updating user");
       }
       toast.success("User updated");
+      setPopUpState(false);
       reset();
-      navigate(-1);
     } catch (e) {
       toast.error(e.message);
     }
   };
   const labelClasses = "flex flex-col";
   return (
-    <CustomModal
-      isOpen={true}
-      customStyles={{
-        width: "30%",
-        "box-shadow": "2px 2px 7px -3px black",
-        margin: "auto",
-      }}
-      onClose2={() => {
-        navigate(-1);
-      }}
-    >
-      <div className="px-2">
-        <div className="mb-[5px] border-b-[1px] border-gray-50">
-          <strong className="text-2xl font-bold ">Edit User</strong>
-        </div>
-        <form
-          onSubmit={handleSubmit(updateHandler)}
-          method="post"
-          className="flex flex-col"
-        >
-          <div className={labelClasses}>
-            <label>First Name</label>
-            <input
-              className={inputClasses}
-              type="text"
-              placeholder="First Name"
-              {...register("firstName")}
-            />
-            {errors.firstName && (
-              <span className="text-red-600">{errors.firstName.message}</span>
-            )}
-          </div>
-          <div className={labelClasses}>
-            <label>Last Name</label>
-            <input
-              className={inputClasses}
-              type="text"
-              placeholder="Last Name"
-              {...register("lastName")}
-            />
-            {errors.lastName && (
-              <span className="text-red-600">{errors.lastName.message}</span>
-            )}
-          </div>
-          <div className={labelClasses}>
-            <label>Email</label>
-            <input
-              className={inputClasses}
-              type="text"
-              placeholder="Email"
-              {...register("email")}
-            />
-            {errors.email && (
-              <span className="text-red-600">{errors.email.message}</span>
-            )}
-          </div>
-          <div className={labelClasses}>
-            <label>Phone</label>
-            <input
-              className={inputClasses}
-              type="phone"
-              placeholder="phone"
-              {...register("phone")}
-            />
-            {errors.phone && (
-              <span className="text-red-600">{errors.phone.message}</span>
-            )}
-          </div>
-          <div className={labelClasses}>
-            <label>Profile Image Link</label>
-            <input
-              className={inputClasses}
-              type="profileImage"
-              placeholder="profileImage"
-              {...register("profileImage")}
-            />
-            {errors.profileImage && (
-              <span className="text-red-600">
-                {errors.profileImage.message}
-              </span>
-            )}
-          </div>
-          <input type="submit" />
-          <Button text="Cancel" onClick={cancelBtnHandler} />
-        </form>
+    <div className="px-2">
+      <div className="mb-[5px] border-b-[1px] border-gray-50">
+        <strong className="text-2xl font-bold ">Edit User</strong>
       </div>
-    </CustomModal>
+      <form
+        onSubmit={handleSubmit(updateHandler)}
+        method="post"
+        className="flex flex-col"
+      >
+        <div className={labelClasses}>
+          <label>First Name</label>
+          <input
+            className={inputClasses}
+            type="text"
+            placeholder="First Name"
+            {...register("firstName")}
+          />
+          {errors.firstName && (
+            <span className="text-red-600">{errors.firstName.message}</span>
+          )}
+        </div>
+        <div className={labelClasses}>
+          <label>Last Name</label>
+          <input
+            className={inputClasses}
+            type="text"
+            placeholder="Last Name"
+            {...register("lastName")}
+          />
+          {errors.lastName && (
+            <span className="text-red-600">{errors.lastName.message}</span>
+          )}
+        </div>
+        <div className={labelClasses}>
+          <label>Email</label>
+          <input
+            className={inputClasses}
+            type="text"
+            placeholder="Email"
+            {...register("email")}
+          />
+          {errors.email && (
+            <span className="text-red-600">{errors.email.message}</span>
+          )}
+        </div>
+        <div className={labelClasses}>
+          <label>Phone</label>
+          <input
+            className={inputClasses}
+            type="phone"
+            placeholder="phone"
+            {...register("phone")}
+          />
+          {errors.phone && (
+            <span className="text-red-600">{errors.phone.message}</span>
+          )}
+        </div>
+        <div className={labelClasses}>
+          <label>Profile Image Link</label>
+          <input
+            className={inputClasses}
+            type="profileImage"
+            placeholder="profileImage"
+            {...register("profileImage")}
+          />
+          {errors.profileImage && (
+            <span className="text-red-600">{errors.profileImage.message}</span>
+          )}
+        </div>
+        <input type="submit" />
+        <Button text="Cancel" onClick={cancelBtnHandler} />
+      </form>
+    </div>
   );
 };
 

@@ -1,31 +1,24 @@
-import { useEffect, useMemo, useState } from "react";
-import { Header } from "../common/Header.component";
+import { useMemo, useState } from "react";
 import Pagination from "../common/Pagination.component";
-import { User } from "./User";
 import axios from "axios";
 import Loader from "../common/Loader.component";
-import { AiOutlineSearch } from "react-icons/ai";
+import { AiFillDelete, AiFillEdit, AiOutlineSearch } from "react-icons/ai";
 import Button from "../common/Button.component";
-import { useMatch, useNavigate, useParams } from "react-router-dom";
-import DialogBox from "../common/Dialogue.component";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { FaSort } from "react-icons/fa";
-import { UseCallApi } from "../../hooks/useApiCall";
-import { AiFillEdit } from "react-icons/ai";
-import { AiFillDelete } from "react-icons/ai";
 import CustomModal from "../common/Modal.component";
 import UserForm from "./UserForm";
 import { useQuery } from "@tanstack/react-query";
 import { fetchUsers } from "../../api/user/user";
+import Switcher7 from "../common/Toggle2";
+import UpdateUserForm from "./EditUserForm";
+
 export default function UserList() {
-  const params = useParams();
-  // let [users, setUsers] = useState([])
-  // let [total, setTotal] = useState(0)
-  let [isLoading, setIsLoading] = useState(true);
   let [skip, setSkip] = useState(0);
   let [showAddUser, setShowAddUesr] = useState(false);
+  let [showEditUser, setShowEditUser] = useState(false);
   let [deleteDialogue, setDeleteDiaglogue] = useState(false);
-  let [userToBeDeleted, setUserToBeDeleted] = useState(null);
   let [sortField, setSortField] = useState("firstName");
   let [sortOrder, setSortOrder] = useState("ASC");
   let [searchField, setSearchField] = useState(null);
@@ -42,41 +35,33 @@ export default function UserList() {
       limit: limit,
       search: searchField,
       page: pageNumber,
+      skip,
     }),
-    [sortField, sortOrder, limit, searchField, pageNumber]
+    [sortField, sortOrder, limit, skip, searchField, pageNumber]
   );
   const { status, data, error } = useQuery({
     queryKey: ["users"],
     queryFn: () => {
-      return fetchUsers({
-        sort: sortField,
-        order: sortOrder,
-        limit: limit,
-        search: searchField,
-        page: pageNumber,
-      });
+      return fetchUsers(query);
     },
   });
 
-  const addUserBtnHandler = () => {
-    navigate("create");
-  };
+  if (error) {
+    console.log("error in userlist ", error);
+  }
+
   const setCurrentPage = (page) => {
     setPageNumber(page);
   };
 
   const EditHandler = (id) => {
-    navigate("edit/" + id);
+    setShowEditUser((x) => !x);
   };
 
   const deleteUserHandler = (id) => {
     setDeleteDiaglogue(true);
-    setUserToBeDeleted(id);
   };
 
-  const onCancelDeleteDialogBox = () => {
-    setDeleteDiaglogue(false);
-  };
   const onClickSortHandler = (field) => {
     setSortField(field);
     setSortOrder((x) => {
@@ -85,12 +70,10 @@ export default function UserList() {
     });
   };
 
-  const onConfirmDeleteDilogBox = async () => {
+  const onConfirmDeleteDilogBox = async (id) => {
     setDeleteDiaglogue(false);
     try {
-      const resp = await axios.delete(
-        "http://localhost:4000/api/user/" + userToBeDeleted
-      );
+      const resp = await axios.delete("http://localhost:4000/api/user/" + id);
       if (resp.status !== 201 || resp.status !== 200) {
         console.log("error occured while updating user");
       }
@@ -108,7 +91,7 @@ export default function UserList() {
   };
 
   return (
-    <div className="flex flex-col px-14">
+    <div className="flex flex-col px-14 ">
       <div className="flex justify-between border-bottom items-center my-[6px]">
         <div className="flex">
           <strong className="text-xl font-bold mr-[12px]">Users</strong>
@@ -129,25 +112,14 @@ export default function UserList() {
         <Loader />
       ) : (
         <>
-          <table className="table-auto border-collapse mx-[10px] my-[12px] overflow-auto">
-            <thead>
-              <th></th>
+          <table className="table-auto w-[80%] m-auto border-collapse mx-[10px] my-[12px] overflow-auto">
+            <thead className="my-4">
               <th>
                 <div className="flex items-center gap-1">
                   <span> Name</span>{" "}
                   <FaSort
                     onClick={() => {
                       onClickSortHandler("firstName");
-                    }}
-                  />
-                </div>
-              </th>
-              <th>
-                <div className="flex items-center gap-1">
-                  <span> Email</span>{" "}
-                  <FaSort
-                    onClick={() => {
-                      onClickSortHandler("email");
                     }}
                   />
                 </div>
@@ -164,6 +136,11 @@ export default function UserList() {
               </th>
               <th>
                 <div className="flex items-center gap-1">
+                  <span> Status</span>
+                </div>
+              </th>
+              <th>
+                <div className="flex items-center gap-1">
                   <span> Action</span>
                 </div>
               </th>
@@ -173,36 +150,109 @@ export default function UserList() {
                 data.data.data.map((person) => {
                   return (
                     <tr className="border-b" key={person.id}>
-                      <td onClick={() => navigate("profile/" + person.id)}>
+                      <td
+                        className="flex items-center gap-2"
+                        onClick={() => navigate("profile/" + person.id)}
+                      >
                         <img
-                          className="w-10 h-10 rounded-full"
+                          className="w-10 h-10 rounded-full shadow-md"
                           alt="user"
                           src={person.profileImage || "/defaultProfile.png"}
                         />
+                        <div className="flex flex-col">
+                          <p className="font-semibold">
+                            {" "}
+                            {person.firstName + " " + person.lastName}
+                          </p>
+                          <p className="text-sm">{person.email}</p>
+                        </div>
                       </td>
-                      <td>{person.firstName + " " + person.lastName}</td>
-                      <td>{person.email}</td>
                       <td>{person.phone}</td>
+                      <td>
+                        <Switcher7
+                          isCheckedDefault={person.isActive}
+                          // handleChange={() => console.log("click")}
+                        />
+                      </td>
                       <td className="py-2 flex flex-row gap-2">
-                        <Button
-                          text="Edit"
+                        <AiFillEdit
+                          size={22}
                           onClick={() => {
                             EditHandler(person.id);
                           }}
+                          style={{ color: "#17a132" }}
                         />
-                        {/* <AiFillEdit style={{ color: '#17a132' }} /> */}
-                        <Button
-                          color="bg-red-600"
+                        <AiFillDelete
+                          size={22}
                           onClick={() => {
                             deleteUserHandler(person.id);
                           }}
-                          text="Delete"
+                          style={{
+                            color: "#e81111",
+                          }}
                         />
-                        {/* <AiFillDelete
-                        style={{
-                          color: '#e81111',
-                        }}
-                      /> */}
+                        <CustomModal
+                          isOpen={showAddUser}
+                          customStyles={{
+                            width: "30%",
+                            "box-shadow": "2px 2px 7px -3px black",
+                            margin: "auto",
+                            height: "auto",
+                          }}
+                          onClose2={() => {
+                            setShowAddUesr(false);
+                          }}
+                        >
+                          <UserForm setPopUpState={setShowAddUesr} />
+                        </CustomModal>
+                        <CustomModal
+                          isOpen={showEditUser}
+                          customStyles={{
+                            width: "30%",
+                            "box-shadow": "2px 2px 7px -3px black",
+                            margin: "auto",
+                            height: "auto",
+                          }}
+                          onClose2={() => {
+                            setShowEditUser(false);
+                          }}
+                        >
+                          <UpdateUserForm
+                            id={person.id}
+                            setPopUpState={setShowEditUser}
+                          />
+                        </CustomModal>
+                        <CustomModal
+                          isOpen={deleteDialogue}
+                          customStyles={{
+                            width: "40%",
+                            padding: "15px 13px",
+                            "box-shadow": "2px 2px 7px -3px black",
+                            // margin: "auto",
+                            height: "110px",
+                            overflow: "unset",
+                          }}
+                          onClose2={() => {
+                            setDeleteDiaglogue(false);
+                          }}
+                        >
+                          <div className="flex flex-col gap-2">
+                            <p>Are you confirm to delete this user ?</p>
+                            <div className="flex justify-end">
+                              <Button
+                                text={"Confirm"}
+                                onClick={() =>
+                                  onConfirmDeleteDilogBox(person.id)
+                                }
+                              />
+                              <Button
+                                color="bg-red-600"
+                                text={"Cancel"}
+                                onClick={() => setDeleteDiaglogue(false)}
+                              />
+                            </div>
+                          </div>
+                        </CustomModal>
                       </td>
                     </tr>
                   );
@@ -212,20 +262,6 @@ export default function UserList() {
               )}
             </tbody>
           </table>
-          <CustomModal
-            isOpen={showAddUser}
-            customStyles={{
-              width: "30%",
-              "box-shadow": "2px 2px 7px -3px black",
-              margin: "auto",
-              height: "auto",
-            }}
-            onClose2={() => {
-              setShowAddUesr(false);
-            }}
-          >
-            <UserForm setPopUpState={setShowAddUesr} />
-          </CustomModal>
         </>
       )}
       <Pagination
@@ -234,15 +270,6 @@ export default function UserList() {
         changeSkip={skipHandler}
         setCurrentPage2={setCurrentPage}
       />
-      {deleteDialogue && (
-        <DialogBox
-          message="Are you confirm to delete this user ? "
-          onCancel={() => {
-            onCancelDeleteDialogBox();
-          }}
-          onConfirm={onConfirmDeleteDilogBox}
-        />
-      )}
     </div>
   );
 }

@@ -13,7 +13,7 @@ const PostLikeList = ({
   const navigate = useNavigate();
   return (
     <div>
-      <div className="flex flex-row justify-between mb-2 pb-1 border-b-[1px] border-gray-500">
+      <div className="flex flex-row justify-between pb-1 border-b-[1px] border-gray-500">
         <strong className="text-lg">{heading}</strong>
         <ImCross onClick={() => onCloseModal()} />
       </div>
@@ -21,7 +21,7 @@ const PostLikeList = ({
       <ul>
         {likes?.length > 0 ? (
           likes.map((x) => (
-            <div className="flex flex-row items-center my-1 p-1 justify-between">
+            <div className="flex flex-row items-center p-1 justify-between max-h-[200px]">
               <div className="flex flex-row">
                 <img
                   onClick={() => navigate("/user/profile/" + x.userId)}
@@ -29,7 +29,9 @@ const PostLikeList = ({
                   alt="user"
                   className="w-10 h-10 rounded-full"
                 />
-                <strong className="pl-5">{x.firstName + x.lastName}</strong>
+                <strong className="pl-5">
+                  {x.firstName + " " + x.lastName}
+                </strong>
               </div>
               {user.id !== x.userId && (
                 <Button

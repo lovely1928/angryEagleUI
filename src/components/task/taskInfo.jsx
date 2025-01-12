@@ -84,7 +84,6 @@ const TaskInfo = ({ task, onCloseModal }) => {
             <li className="flex  border-1 border-bottom-gray gap-4 justify-between px-6 py-2">
               <p className={valueClass}>{x.title}</p>
               <Switcher7
-                isDone={x.isDone}
                 isCheckedDefault={x.isDone}
                 handleChange={() => changeSubTaskstatus(x.id)}
               />
