@@ -105,7 +105,7 @@ export default function UserList() {
             <AiOutlineSearch size={20} style={{ color: "#000000" }} />
           </div>
         </div>
-        <Button text="Add" onClick={() => setShowAddUesr(() => !showAddUser)} />
+        <Button text="Add" textSize="small" onClick={() => setShowAddUesr(() => !showAddUser)} />
       </div>
 
       {status === "pending" ? (

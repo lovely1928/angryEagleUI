@@ -158,7 +158,11 @@ const UserProfile = () => {
 
           <div className="flex flex-col">
             <h1 className="text-xl font-bold">Posts</h1>
-            <PostGrid userId={userId} />
+            {/* <div className="flex gap-2 items-center justify-center border-b-[1px] border-black mb-1">
+              <p>List</p>
+              <p>Grid</p>
+            </div> */}
+            <PostGrid view={"grid"} userId={userId} />
           </div>
 
           <Modal isOpen={moreInfoModal}>
